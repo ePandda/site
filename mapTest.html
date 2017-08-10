@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+    <title>What's in my backyard</title>
+    <style>
+      /* Always set the map height explicitly to define the size of the div
+       * element that contains the map. */
+      #map {
+        height: 100%;
+      }
+      #description {
+        font-family: Roboto;
+        font-size: 15px;
+        font-weight: 300;
+      }
+
+      #infowindow-content .title {
+        font-weight: bold;
+      }
+
+      #infowindow-content {
+        display: none;
+      }
+
+      #map #infowindow-content {
+        display: inline;
+      }
+
+      .pac-card {
+        margin: 10px 10px 0 0;
+        border-radius: 2px 0 0 2px;
+        box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        outline: none;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+        background-color: #fff;
+        font-family: Roboto;
+      }
+
+      #pac-container {
+        padding-bottom: 12px;
+        margin-right: 12px;
+      }
+
+      .pac-controls {
+        display: inline-block;
+        padding: 5px 11px;
+      }
+
+      .pac-controls label {
+        font-family: Roboto;
+        font-size: 13px;
+        font-weight: 300;
+      }
+
+      #pac-input {
+        background-color: #fff;
+        font-family: Roboto;
+        font-size: 15px;
+        font-weight: 300;
+        margin-left: 12px;
+        padding: 0 11px 0 13px;
+        text-overflow: ellipsis;
+        width: 400px;
+      }
+
+      #pac-input:focus {
+        border-color: #4d90fe;
+      }
+
+      #title {
+        color: #fff;
+        background-color: #4d90fe;
+        font-size: 25px;
+        font-weight: 500;
+        padding: 6px 12px;
+      }
+      #target {
+        width: 345px;
+      }
+    </style>
+  </head>
+  <body>
+    <input id="pac-input" class="controls" type="text" placeholder="Enter search term">
+	<div id="map" style="height:400px; border:1px solid #EDEDED;"></div>
+    <script >
+		var map, infoWindow;
+		function initMap() {
+			var initPos = {lat: 38.770792, lng: -104.320253 };
+			map = new google.maps.Map(document.getElementById('map'), {
+			  center: initPos,
+			  zoom: 10
+			});
+			infoWindow = new google.maps.InfoWindow;
+			infoWindow.setPosition(initPos);
+			infoWindow.setContent('Please wait while we locate your position');
+			infoWindow.open(map);
+			map.setCenter(initPos);
+		
+			// Create the search box and link it to the UI element.
+			var input = document.getElementById('pac-input');
+			var searchBox = new google.maps.places.SearchBox(input);
+			map.controls[google.maps.ControlPosition.TOP_RIGHT].push(input);
+
+			// Bias the SearchBox results towards current map's viewport.
+			map.addListener('bounds_changed', function() {
+			  searchBox.setBounds(map.getBounds());
+			});
+		   searchBox.addListener('places_changed', function() {
+			  var places = searchBox.getPlaces();
+			  if (places.length == 0) {
+				return;
+			  }
+
+			  // For each place, get the icon, name and location.
+			  var bounds = new google.maps.LatLngBounds();
+			  places.forEach(function(place) {
+				if (!place.geometry) {
+				  console.log("Returned place contains no geometry");
+				  return;
+				}
+				//plotSpecimen(map, infoWindow, place.geometry.location);
+				var pos = {
+				  lat: place.geometry.location.lat(),
+				  lng: place.geometry.location.lng()
+				};
+				plotSpecimen(map, infoWindow, pos);
+
+				if (place.geometry.viewport) {
+				  // Only geocodes have viewport.
+				  bounds.union(place.geometry.viewport);
+				} else {
+				  bounds.extend(place.geometry.location);
+				}
+			  });
+			  //map.fitBounds(bounds);
+			});
+
+			// Try HTML5 geolocation.
+			if (navigator.geolocation) {
+			  navigator.geolocation.getCurrentPosition(function(position) {
+				var pos = {
+				  lat: position.coords.latitude,
+				  lng: position.coords.longitude
+				};
+				infoWindow.setPosition(pos);
+				plotSpecimen(map, infoWindow, pos);
+			  }, function() {
+				handleLocationError(true, infoWindow, map.getCenter());
+			  });
+			} else {
+			  // Browser doesn't support Geolocation
+			  handleLocationError(false, infoWindow, map.getCenter());
+			}
+			map.addListener('dragend', function () {
+				var idleListener = map.addListener('idle', function () {
+					google.maps.event.removeListener(idleListener);
+					var newpos = {
+						  lat: map.getCenter().lat(),
+						  lng: map.getCenter().lng()
+						};
+					plotSpecimen(map, infoWindow, newpos);
+				});
+			});
+		}
+
+		function handleLocationError(browserHasGeolocation, infoWindow, pos) {
+			infoWindow.setPosition(pos);
+			infoWindow.setContent(browserHasGeolocation ?
+								  'Error: Please enable location sharing in your browser to use this tool.' :
+								  'Error: Your browser doesn\'t support geolocation.');
+			infoWindow.open(map);
+		}
+
+		function plotSpecimen(map, infoWindow, pos){
+			$.getJSON( 'https://api.epandda.org/geonames?geoPoint=' + pos.lat + ', ' + pos.lng + '&geoRadius=10000&limit=500', function( data ) {
+				specimens_results = data;
+				// add all the specimen points to the map
+				var specimens;
+				if(specimens_results.results.idigbio_resolved.length){
+					placeSpecimenMarkers(specimens_results.results.idigbio_resolved, infoWindow);
+				}
+				if(specimens_results.results.pbdb_resolved.length){
+					placeSpecimenMarkers(specimens_results.results.pbdb_resolved, infoWindow);
+				}
+				infoWindow.setPosition(pos);
+				infoWindow.setContent(specimens_results.counts.totalCount + ' specimens found in this area');
+				infoWindow.open(map);
+				map.setCenter(pos);
+
+			});
+		}
+		function placeSpecimenMarkers(specimenResults, infowindow) {
+		  var marker, i;
+		  var markerData = {};
+		  for (var i = 0; i < specimenResults.length; i++) {
+				var specimen = specimenResults[i];
+				if ("idigbio:geoPoint" in specimen){
+					var latlng = String(specimen["idigbio:geoPoint"]);
+					var lat = latlng.substring(7, latlng.indexOf(","));
+					var lng = latlng.substring(latlng.indexOf(",") + 9, latlng.length -1);
+				} else if ("lat" in specimen && "lng" in specimen ) {
+					var lat = specimen['lat'];
+					var lng = specimen['lng'];
+				}
+				var specimenLatLng = new google.maps.LatLng(lat,lng);
+				var scientificName = "";
+				if ("dwc:specificEpithet" in specimen && specimen["dwc:specificEpithet"]) {
+					scientificName = specimen['dwc:genus'];
+					if("dwc:specificEpithet" in specimen){
+						scientificName = scientificName + ' ' + specimen['dwc:specificEpithet'];
+					}
+				} else if ("genus_name" in specimen && specimen["genus_name"]) {
+					scientificName = specimen['genus_name'];
+					if("species_name" in specimen){
+						scientificName = scientificName + ' ' + specimen['species_name'];
+					}
+				} else if ("dwc:scientificName" in specimen && specimen["dwc:scientificName"]){
+					scientificName = specimen['dwc:scientificName'];
+				}
+				scientificName = scientificName.toLowerCase();
+				var spec_type = "";
+				if ("dwc:basisOfRecord" in specimen) {
+					if(specimen['dwc:basisOfRecord'] == "preservedspecimen"){
+						spec_type = "(extant)";
+					}else{
+						spec_type = "(fossil)";
+					}
+				}else{
+					spec_type = "(fossil)";
+				}
+				var hierTaxonomy = [];
+				var hierTaxonomyDisplay = "";
+				if ("dwc:kingdom" in specimen && specimen["dwc:kingdom"]) {
+					hierTaxonomy.push(specimen["dwc:kingdom"]);
+				}
+				if ("dwc:phylum" in specimen && specimen["dwc:phylum"]) {
+					hierTaxonomy.push(specimen["dwc:phylum"]);
+				}
+				if ("dwc:class" in specimen && specimen["dwc:class"]) {
+					hierTaxonomy.push(specimen["dwc:class"]);
+				}
+				if ("dwc:order" in specimen && specimen["dwc:order"]) {
+					hierTaxonomy.push(specimen["dwc:order"]);
+				}
+				if ("dwc:family" in specimen && specimen["dwc:order"]) {
+					hierTaxonomy.push(specimen["dwc:order"]);
+				}
+				if(hierTaxonomy.length){
+					hierTaxonomyDisplay = "<div style='text-transform:capitalize;'>" + hierTaxonomy.join(" > ") + "</div>";
+				}
+				scientificName = scientificName.charAt(0).toUpperCase() + scientificName.slice(1);
+				if(!markerData[specimenLatLng]){
+					markerData[specimenLatLng] = {"coors" : specimenLatLng, "display" : []};
+				}
+				markerData[specimenLatLng]["display"].push("<div style='font-size:18px;'><b><i>" + scientificName + "</i></b> " + spec_type + "</div>" + hierTaxonomyDisplay + "<br/><a href='" + specimen["url"] + "'>" + specimen["url"] + "</a>");
+				if(i == 500){
+					break;
+				}
+			}
+			var c = 0;
+			for (var markerLatLng in markerData) {
+				marker = new google.maps.Marker({
+					position: markerData[markerLatLng]["coors"],
+					map: map,
+					title: c
+				});
+				var markerDisplay = markerData[markerLatLng]["display"].join("<br/><br/>");
+				google.maps.event.addListener(marker, 'click', (function(marker, markerDisplay) {
+					return function() {
+						infowindow.setContent(markerDisplay);
+						infowindow.open(map, marker);
+					}
+				})(marker, markerDisplay));
+				c++;
+			}
+		}
+    </script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAV0UQ1OJmq78zqZeHjcsldYp_VWUmsPwg&libraries=places"></script>
+  	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  	<script>
+		jQuery( document ).ready(function() {
+			initMap();
+		});
+	</script>
+  </body>
+</html>

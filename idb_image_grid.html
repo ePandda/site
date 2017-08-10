@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>ePANDDA | enhancing Paleontological and Neontological Data Discovery API</title>
+
+    <meta name="description" content="">
+    <meta name="theme-color" content="#8bc53f">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="img/favicon.png?v=1">
+    <link rel="apple-touch-icon" sizes="57x57" href="img/apple-touch-icon.png?v=1">
+    <link rel="apple-touch-icon" sizes="72x72" href="img/apple-touch-icon-72x72.png?v=1">
+    <link rel="apple-touch-icon" sizes="114x114" href="img/apple-touch-icon-114x114.png?v=1">
+
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/epandda.css">
+
+</head>
+<body class="container-full" id="top">
+    <main id="main" class="row clear">
+    	<div class="content col-full col-10-m  push-1-m">
+			<section class="container-full">
+				<div class="row">
+					<div class="col-full">
+						<h3>Images by Taxon</h3>
+						<p>Search for any taxa and view images contributed to iDigBio that match that term.<br/>Search terms can be broad or specific, such as: <strong>cetacea</strong>, <strong>hadrosaurus</strong> or <strong>ursus arctos</strong></p>
+						<form id="imageSearch">
+							<label><strong>Taxonomic Term </strong></label>
+							<input type="text" id="taxonTerm" name="taxonTerm" class="form-element">
+							<button class="button imageSearchButton" onclick="getTaxaImages($('#taxonTerm').val(), 12, 0); return false;">Search</button>
+						</form>
+					</div>
+				</div>
+				<hr/>
+				<div id="idbImages"></div>
+				<hr/>
+				<div id="idbImagePaging" class="row">
+					<div class="col-4-m push-4">
+						<div class="row">
+							<div id="idbPagingPrev" class="col-4-m"></div>
+							<div id="idbPagingText" class="col-4-m"a></div>
+							<div id="idbPagingNext" class="col-4-m"></div>
+						</div>
+					</div>
+				</div>
+			</section>
+		</div>
+	</main>
+</body>
+<script src="js/vendor/lodash.js"></script>
+<script src="js/vendor/jquery.min.js"></script>
+
+<script src="js/vendor/navigo.min.js"></script>
+<!--<script src="js/vendor/handlebars.min.js"></script>-->
+
+
+<!--<script src="js/vendor/slick.min.js"></script>-->
+<script src="js/vendor/countUp.min.js"></script>
+<script src="js/vendor/flipWords.js"></script>
+<script src="js/vendor/moment.min.js"></script>
+<script src="js/default.js"></script>
+<script src="js/navigoScripts.js"></script>
+<script src="js/apiForm.js"></script>
+</html>

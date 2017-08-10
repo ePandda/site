@@ -1,0 +1,305 @@
+
+<section id="documentation-endpoint" class="container-full">
+<div class="row">
+	<div class="col-12-s">
+		<h1>ePANDDA Endpoint Documentation</h1>
+	</div>
+</div>
+ 
+<div class="row">
+	<div class="col-12-s">
+		<h2>publications</h2>
+		<p>Returns specimen occurrence and publication records for a given scientific name. results can be filtered by the optional params</p>
+			 
+		<table class="parameterTable">
+			<tr>
+				<th>Name</th>
+				<th>Label</th>
+				<th>Type</th>
+				<th>Required?</th>
+				<th>Description</th>
+			</tr>
+			 
+			<tr>
+				<td>scientific_name</td>
+				<td></td>
+				<td>text</td>
+				<td>True</td>
+				<td>Taxon to search occurrence records for</td>
+			</tr>
+					 
+			<tr>
+				<td>journal</td>
+				<td></td>
+				<td>text</td>
+				<td>False</td>
+				<td>Then name of academic Journal a publication would be found</td>
+			</tr>
+					 
+			<tr>
+				<td>article</td>
+				<td></td>
+				<td>text</td>
+				<td>False</td>
+				<td>The name of the journal article the given scientific_name appears in</td>
+			</tr>
+					 
+			<tr>
+				<td>author</td>
+				<td></td>
+				<td>text</td>
+				<td>False</td>
+				<td>The name of the author who's article describes the given scientific_name</td>
+			</tr>
+					 
+			<tr>
+				<td>state_province</td>
+				<td></td>
+				<td>text</td>
+				<td>False</td>
+				<td>The state/province to search for scientific_name and publication references</td>
+			</tr>
+					 
+			<tr>
+				<td>county</td>
+				<td></td>
+				<td>text</td>
+				<td>False</td>
+				<td>The county to search for scientific_name and publication references</td>
+			</tr>
+					 
+			<tr>
+				<td>locality</td>
+				<td></td>
+				<td>text</td>
+				<td>False</td>
+				<td>The locality name to search for scientific_name occurences and publication references</td>
+			</tr>
+					 
+		</table>
+	</div>
+</div>
+			 
+<div class="row">
+	<div class="col-12-s">
+		<h2>occurrences</h2>
+		<p>Returns specimens collected from a given locality</p>
+			 
+		<table class="parameterTable">
+			<tr>
+				<th>Name</th>
+				<th>Label</th>
+				<th>Type</th>
+				<th>Required?</th>
+				<th>Description</th>
+			</tr>
+			 
+			<tr>
+				<td>taxon_name</td>
+				<td></td>
+				<td>text</td>
+				<td>True</td>
+				<td>The taxa to search occurrences for</td>
+			</tr>
+					 
+			<tr>
+				<td>locality</td>
+				<td></td>
+				<td>text</td>
+				<td>False</td>
+				<td>The locality name to bound taxonomic occurences to</td>
+			</tr>
+					 
+			<tr>
+				<td>period</td>
+				<td></td>
+				<td>text</td>
+				<td></td>
+				<td>The geologic time period to filter taxon occurrences by</td>
+			</tr>
+					 
+			<tr>
+				<td>institution_code</td>
+				<td></td>
+				<td>text</td>
+				<td></td>
+				<td>The abbreviated institution code that houses the taxon occurrence specimen</td>
+			</tr>
+					 
+		</table>
+	</div>
+</div>
+			 
+<div class="row">
+	<div class="col-12-s">
+		<h2>geonames</h2>
+		<p>Returns specimens collected from a given locality</p>
+			 
+		<table class="parameterTable">
+			<tr>
+				<th>Name</th>
+				<th>Label</th>
+				<th>Type</th>
+				<th>Required?</th>
+				<th>Description</th>
+			</tr>
+			 
+			<tr>
+				<td>geolocation</td>
+				<td>Full Text Geographic Search</td>
+				<td>text</td>
+				<td>False</td>
+				<td>A generic place name, will search across locality, county, state/province and country fields</td>
+			</tr>
+					 
+			<tr>
+				<td>countryName</td>
+				<td>Country Name</td>
+				<td>text</td>
+				<td>False</td>
+				<td>Full country names</td>
+			</tr>
+					 
+			<tr>
+				<td>countryCode</td>
+				<td>Country Code (2-Letter)</td>
+				<td>text</td>
+				<td>False</td>
+				<td>2-letter country code, provided from geonames.org</td>
+			</tr>
+					 
+			<tr>
+				<td>stateProvinceName</td>
+				<td>State/Province Name</td>
+				<td>text</td>
+				<td>False</td>
+				<td>State or province name. Do not include qualifiers (e.g. State, Province) to return better results</td>
+			</tr>
+					 
+			<tr>
+				<td>stateProvinceCode</td>
+				<td>State Province Code (2-Letter or 2-Digit)</td>
+				<td>text</td>
+				<td>False</td>
+				<td>State or province name. Do not include qualifiers (e.g. State, Province) to return better results</td>
+			</tr>
+					 
+			<tr>
+				<td>county</td>
+				<td>County Name</td>
+				<td>text</td>
+				<td>False</td>
+				<td>County name. Do not add "County" to your search string</td>
+			</tr>
+					 
+			<tr>
+				<td>locality</td>
+				<td>Locality Name</td>
+				<td>text</td>
+				<td>False</td>
+				<td>The specific locality where a specimen was recorded</td>
+			</tr>
+					 
+			<tr>
+				<td>geoPoint</td>
+				<td>Geographic Point (Longitude, Latitude)</td>
+				<td>text</td>
+				<td>False</td>
+				<td>The Longitude, Latitude to search on. Provide a comma separated string. IMPORTANT geoJSON requries LONGITUDE first.</td>
+			</tr>
+					 
+			<tr>
+				<td>geoRadius</td>
+				<td>Distance from Geographic Point in Meters</td>
+				<td>text</td>
+				<td>False</td>
+				<td>The distance from the provided geoPoint to search within, in meters</td>
+			</tr>
+					 
+		</table>
+	</div>
+</div>
+			 
+<div class="row">
+	<div class="col-12-s">
+		<h2>stats</h2>
+		<p>Returns general API statistical information</p>
+			 
+		<table class="parameterTable">
+			<tr>
+				<th>Name</th>
+				<th>Label</th>
+				<th>Type</th>
+				<th>Required?</th>
+				<th>Description</th>
+			</tr>
+			 
+			<tr>
+				<td>stateProvinces</td>
+				<td></td>
+				<td>boolean</td>
+				<td>False</td>
+				<td>The number of unique states represented in the collections</td>
+			</tr>
+					 
+			<tr>
+				<td>countries</td>
+				<td></td>
+				<td>boolean</td>
+				<td>False</td>
+				<td>The number of unique countries represented in the collections</td>
+			</tr>
+					 
+			<tr>
+				<td>counties</td>
+				<td></td>
+				<td>boolean</td>
+				<td>False</td>
+				<td>The number of unique counties represented in the collections</td>
+			</tr>
+					 
+			<tr>
+				<td>localities</td>
+				<td></td>
+				<td>boolean</td>
+				<td>False</td>
+				<td>The number of unique localities represented in the collections</td>
+			</tr>
+					 
+			<tr>
+				<td>geoPoints</td>
+				<td></td>
+				<td>boolean</td>
+				<td>False</td>
+				<td>The number of unique geographic coordinates represented in the collections</td>
+			</tr>
+					 
+			<tr>
+				<td>totalRecords</td>
+				<td></td>
+				<td>boolean</td>
+				<td>False</td>
+				<td>The count of all specimen/occurrence records included in project from iDigBio and PBDB</td>
+			</tr>
+					 
+			<tr>
+				<td>taxonomies</td>
+				<td></td>
+				<td>boolean</td>
+				<td>False</td>
+				<td>The number of unique taxonomic hierarchies represented in the collections</td>
+			</tr>
+					 
+			<tr>
+				<td>geoPoints</td>
+				<td></td>
+				<td>boolean</td>
+				<td>False</td>
+				<td>The number of unique geographic coordinates represented in the collections</td>
+			</tr>
+					 
+		</table>
+	</div>
+</div>
+			 
+</section>

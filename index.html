@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>ePANDDA | enhancing Paleontological and Neontological Data Discovery API</title>
+
+    <meta name="description" content="">
+    <meta name="theme-color" content="#8bc53f">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="img/favicon.png?v=1">
+    <link rel="apple-touch-icon" sizes="57x57" href="img/apple-touch-icon.png?v=1">
+    <link rel="apple-touch-icon" sizes="72x72" href="img/apple-touch-icon-72x72.png?v=1">
+    <link rel="apple-touch-icon" sizes="114x114" href="img/apple-touch-icon-114x114.png?v=1">
+
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/epandda.css">
+
+</head>
+
+<body class="container-full" id="top">
+
+    <main id="main" class="row clear">
+
+        <div class="col-full col-10-m push-1-m">
+            <div class="status">
+                <span><strong id="status_numRecords">0</strong> records</span><br />
+                <span>API status: <strong id="status_APIstatus">?</strong></span><br />
+                <span>Updated: <strong id="status_date">Date</strong></span>
+            </div>
+        </div>
+
+        <div class="content col-full col-10-m push-1-m" id="content-body"></div>
+    </main>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <!-- ===============================                   ========================================== -->
+    <!-- ===============================                   ========================================== -->
+    <!-- =============================== CONTENT TEMPLATES ========================================== -->
+    <!-- ===============================                   ========================================== -->
+    <!-- ===============================                   ========================================== -->
+
+
+
+    <!-- ===============================                   ========================================== -->
+    <!-- ===============================     COMPONENTS    ========================================== -->
+    <!-- ===============================                   ========================================== -->
+
+
+    <!-- =============================== COLORBARS ========================================== -->
+
+
+    <script type="text/content" id="component-colorbars">
+
+        <section class="container-full">
+
+            <div class="colorbars row clear">
+                <div class="colorbars-top col-full"></div>
+                <div class="colorbars-middle col-full"></div>
+                <div class="colorbars-bottom col-full"></div>
+            </div>
+
+        </section>
+
+    </script>
+
+    <!-- =============================== HEADERS ========================================== -->
+
+
+    <script type="text/content" id="component-headerlarge">
+        <header class="home-page-header container-full">
+
+            <div class="row clear">
+                <div class="col-full">
+                    <p align="center">
+                        <a href="#" data-navigo>
+                            <img src="img/epandda_logo_large_text.png" height="285" width="234" class="top-logo" />
+                        </a>
+                        <span class="betaTag">BETA</span>
+                    </p>
+                </div>
+            </div>
+            <div class="row clear">
+                <div class="col-10 push-1">
+                    <p align="center">
+                        <h3 class="top-slogan">
+                            enhancing Paleontological and Neontological Data Discovery API
+                        </h3>
+                    </p>
+                </div>
+            </div>
+        </header>
+    </script>
+    <script type="text/content" id="component-headersmall">
+        <header class="sub-page-header container-full">
+
+            <div class="row clear">
+                <div class="col-full">
+                    <p>
+                        <a href="#" data-navigo>
+                            <img src="img/epandda_logo_large_text.png" class="top-logo-sub-page" />
+                        </a>
+                        <span class="betaTagSub">BETA</span>
+                    </p>
+                </div>
+            </div>
+            <div class="row clear">
+                <div class="col-10 push-1">
+                    <p align="center">
+                        <h3 class="top-slogan-sub-page">
+                            enhancing Paleontological and Neontological Data Discovery API
+                        </h3>
+                    </p>
+                </div>
+            </div>
+        </header>
+    </script>
+
+
+
+    <!-- =============================== NAV ========================================== -->
+
+
+    <script type="text/content" id="component-nav">
+        <nav class="container-full">
+            <div class="colorbars row clear">
+                <div class="colorbars-top col-full"></div>
+                <div class="colorbars-middle col-full"></div>
+                <div class="colorbars-bottom col-full">
+                    <div class="colorbars-content container-full">
+                        <div class="row clear">
+                            <a href="#about" data-navigo class="big">
+                                <div class="col-full col-3-m nav-button">
+                                    <h2>ABOUT</h2>
+                                </div>
+                            </a>
+                            <a id="documentation-menu" href="#documentation" data-navigo class="big">
+                                <div class="col-full col-3-m nav-button">
+                                    <h2>DOCUMENTATION</h2>
+                                </div>
+                            </a>
+                            <a href="#sandbox" data-navigo class="big">
+                                <div class="col-full col-3-m nav-button">
+                                    <h2>SANDBOX</h2>
+                                </div>
+                            </a>
+                            <a href="#examples" data-navigo class="big">
+                                <div class="col-full col-3-m nav-button">
+                                    <h2>EXAMPLES</h2>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </script>
+
+
+    <!-- =============================== FOOTER ========================================== -->
+
+
+    <script type="text/content" id="component-footer">
+        <footer class="container-full">
+            <div class="row clear">
+                <div class="big-footer-text col-full">
+                    <h1>ePANDDA</h1>
+                </div>
+            </div>
+            <div class="colorbars row clear footer-content">
+                <div class="colorbars-top col-full"></div>
+                <div class="colorbars-middle col full"></div>
+                <div class="colorbars-bottom col-full">
+                    <div class="colorbars-content container-full">
+                        <div class="row clear">
+                            <div class="col-full col-2-m nav-logo"><img class="footer-logo" src="img/epandda_logo_small_corner.png" /></div>
+                            <a href="#" data-navigo class="big">
+                                <div class="col-full col-2-m nav-button">
+                                    <h2>HOME</h2>
+                                </div>
+                            </a>
+                            <a href="#about" data-navigo class="big">
+                                <div class="col-full col-2-m nav-button">
+                                    <h2>ABOUT</h2>
+                                </div>
+                            </a>
+                            <a href="#documentation" data-navigo class="big">
+                                <div class="col-full col-2-m nav-button">
+                                    <h2>DOCUMENTATION</h2>
+                                </div>
+                            </a>
+                            <a href="#sandbox" data-navigo class="big">
+                                <div class="col-full col-2-m nav-button">
+                                    <h2>SANDBOX</h2>
+                                </div>
+                            </a>
+                            <a href="#examples" data-navigo class="big">
+                                <div class="col-full col-2-m nav-button">
+                                    <h2>EXAMPLES</h2>
+                                </div>
+                            </a>
+
+                        </div>
+                        <div class="row clear">
+                            <div class="col-full copyright">
+                                <p align="center">Copyright &copy; 2017. All rights reserved. <a href="#">Privacy Policy</a></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </script>
+
+
+
+
+    <!-- =============================== NSF Grant info ========================================== -->
+
+    <script type="text/content" id="component-nsf">
+
+        <section class="container-full">
+            <div class="row clear">
+                <div class="push-3-m col-3-m">
+                    <p align="center"><img src="img/nsf4.png" /></p>
+                </div>
+                <div class="push-3-m col-3-m">
+                    <p align="center"><img src="img/earthcube_logo.png"/></p>
+                </div>
+            </div>
+            <div class="row clear">
+                <div class="col-full col-6-m push-3-m">
+                    <h3 align="center">Funded by National Science Foundation EarthCube IA</h3>
+                    <p align="center">
+                        <a href="https://www.nsf.gov/awardsearch/showAward?AWD_ID=1540902&HistoricalAwards=false" target="_blank"><i class="fa fa-globe"></i> Award Number 1540902</a> (Sessa, Landman)<br />
+                        <a href="https://nsf.gov/awardsearch/showAward?AWD_ID=1540700&HistoricalAwards=false" target="_blank"><i class="fa fa-globe"></i> Award Number 1540700</a> (Nelson)<br />
+                        <a href="https://nsf.gov/awardsearch/showAward?AWD_ID=1540929&HistoricalAwards=false" target="_blank"><i class="fa fa-globe"></i> Award Number 1540929</a> (Uhen)<br />
+                        <a href="https://nsf.gov/awardsearch/showAward?AWD_ID=1540984&HistoricalAwards=false" target="_blank"><i class="fa fa-globe"></i> Award Number 1540984</a> (Norris, Butts, Karim, Gall)<br />
+                        <a href="https://nsf.gov/awardsearch/showAward?AWD_ID=1541028&HistoricalAwards=false" target="_blank"><i class="fa fa-globe"></i> Award Number 1541028</a> (Park Boush)
+                    </p>
+
+                    <p align="center">For more information about EarthCube, <a href="https://earthcube.org/" target="_blank">click here</a>.</p>
+
+                    <p align="center">
+					  <a href="https://github.com/ePandda" target="_blank">
+						<button class="big-button"><h2><i class="fa fa-github"></i> VIEW ON GITHUB</h2></button>
+					  </a>
+                    </p>
+                </div>
+            </div>
+
+        </section>
+    </script>
+
+
+
+
+
+
+
+    <!-- =============================== "Now Searching" widget ========================================== -->
+
+    <script type="text/content" id="component-nowsearching">
+        <section class="container-full now-searching">
+            <div class="row clear">
+                <div class="col-full">
+                    <h1 align="center" class="now-searching-title">NOW SEARCHING:</h1>
+                </div>
+            </div>
+
+            <div class="row clear">
+                <div class="col-4 now-searching-left">
+                    <div class="now-searching-content">
+                        <h2 id="nowSearching_localities" class="now-searching-title">0</h2>
+                        <h4>localities</h4>
+                    </div>
+                </div>
+                <div class="col-4 now-searching-center">
+                	<div class="now-searching-bullseye">
+                    	<h1 id="nowSearching_count">0</h1>
+                    </div>
+                    <h4>specimen & occurrence records</h4>
+                </div>
+                <div class="col-4 now-searching-right">
+                    <div class="now-searching-content">
+                        <h2 id="nowSearching_taxonomies" class="now-searching-title">0</h2>
+                        <h4>taxonomies</h4>
+                    </div>
+                </div>
+
+            </div>
+
+
+            <div class="row clear">
+                <div class="col-full">
+                    <p align="center">
+                       <a href="#documentation"><button class="big-button" id="viewSampleButton">
+                              <h2><i class="fa fa-search"></i> VIEW SAMPLE</h2>
+                            </button></a>
+                    </p>
+                </div>
+            </div>
+
+        </section>
+
+        <section class="container-full">
+            <div class="row clear">
+                <div class="col full">
+                    <p align="center">
+                        Check out our <a href="#examples">EXAMPLES</a> page to see how you can build applications using the ePANDDA API.
+                    </p>
+                </div>
+            </div>
+
+            <div class="row clear">
+                <!-- USE JQUERY TO WRITE DIVS WITH GRID -->
+                <div id="phylopics"></div>
+            </div>
+
+        </section>
+    </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <!-- =============================== CONTENT - HOME ========================================== -->
+
+    <script type="text/content" id="content-home">
+        <section class="container-full">
+            <div class="row clear">
+                <div class="col-full">
+                    <p align="center"><strong>ePANDDA</strong> is a new application programming interface (API), created as a collaboration by members of the <a href="http://www.amnh.org" target="_blank">American Museum of Natural History</a>, <a href="https://www.fsu.edu/" target="_blank">Florida State University</a>, <a href="https://www2.gmu.edu/" target="_blank">George Mason University</a>,
+                        <a href="https://www.geosociety.org/" target="_blank">STEPPE – Geological Society of America</a>, <a href="http://www.wisc.edu/" target="_blank">University of Wisconsin – Madison</a>, and the <a href="http://peabody.yale.edu/" target="_blank">Yale Peabody Museum of Natural History</a>. Its purpose is to connect the <a href="https://paleobiodb.org/" target="_blank">Paleobiology Database (PBDB)</a>,
+                        <a href="https://www.idigpaleo.org/" target="_blank">iDigPaleo</a>, and <a href="https://www.idigbio.org/" target="_blank">iDigBio</a> and will allow seamless searching and data discovery among the three databases.</p>
+                </div>
+            </div>
+        </section>
+    </script>
+
+    <!-- =============================== CONTENT - ABOUT ========================================== -->
+
+    <script type="text/content" id="content-about">
+        <section id="aboutContent" class="container-full">
+			<div class="row">
+				<div class="col-12 col-10-m push-1-m">
+					<h1>About ePANDDA</h1>
+					<p>
+						The ePANDDA project, Enhancing PAleontological and Neontological Data Discovery API, developed software tools that connect three established, well-supported, and critically important data sources: the Paleobiology Database (PBDB, paleontological, literature-based), iDigPaleo (paleontological, specimen-based) and iDigBio (neontological and paleontological, specimen-based). Prior to this initiative, the ability to access and integrate data from across the geological and biological sciences was a cumbersome and time-consuming process, as the connectivity between modern and fossil, and specimen and literature-based resources did not currently exist. ePANDDA uses application programming interfaces (APIs) to streamline and normalize data acquisition, including retrieval from disparate data sources. This is a major shift in the way the geoscience community has traditionally approached data acquisition and publishing (e.g., building a new portal). It allows for more growth and flexibility in which existing data portals can be utilized and facilitate coordination with future data initiatives in other geoscience disciplines.
+					</p>
+					<p>
+						Ultimately, for the researcher, the ePANDDA project eliminates a significant barrier to data collection and processing, as users are able to access and query multiple data sources at the same time from their preferred portal, resulting in a much richer, combined dataset. The development of APIs provide researchers the opportunity to collaborate across disciplinary boundaries, to ask and answer new research questions affecting a diversity of fields (e.g., biogeographic/niche modeling, systematics, functional morphology, evolutionary biology, ecology, climatology, conservation biology, oceanography, and petroleum geology) and has the potential to change the nature and scope of the research questions that can be addressed by the scientific community.
+					</p>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-12 col-8-m push-2-m">
+					<p class="staticImage">
+						<img src="img/team.jpg">
+					</p>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-12 col-10-m push-1-m">
+					<p>
+						<strong>ePandda</strong> is a collaboration by members of <a href="http://www.amnh.org" target="_blank">The American Museum of Natural History</a>, <a href="https://www.fsu.edu/" target="_blank">Florida State University</a>, <a href="https://www2.gmu.edu/" target="_blank">George Mason University</a>, <a href="https://www.geosociety.org/" target="_blank">STEPPE - Geological Society of America</a>, <a href="http://www.wisc.edu/" target="_blank">University of Wisconsin - Madison</a>, and the <a href="http://peabody.yale.edu/" target="_blank">Yale Peabody Museum of Natural History</a>.
+					</p>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-12 col-8-m push-2-m">
+					<H3>Resources</H3>
+					<p>
+						<i class="fa fa-external-link"></i> <a href="https://paleobiodb.org" target="_blank">PaleoBiology Database (PBDB)</a></br>
+						<i class="fa fa-external-link"></i> <a href="https://www.idigbio.org" target="_blank">iDigBio</a></br>
+						<i class="fa fa-external-link"></i> <a href="https://www.idigpaleo.org" target="_blank">iDigPaleo</a></br>
+						<i class="fa fa-external-link"></i> <a href="https://earthcube.org/" target="_blank">Funded by National Science Foundation EarthCube IA</a>
+					</p>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-10 push-1 text-center">
+					<div class="row">
+						<div class="col-12 text-center">
+							<h3><strong>File a Bug Report</strong></h3>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-3 push-3 text-center">
+							<h3><strong><a href="https://github.com/ePandda/ePandda-API/issues" target="_blank"><i class="fa fa-github"></i> Github</a></strong></h3>
+						</div>
+						<div class="col-3 push-3 text-center">
+							<h3><strong><a id="bugFormToggle" href=""><i class="fa fa-envelope-o"></i> Email</a></strong></h3>
+						</div>
+					</div>
+					<br/>
+					<form id="aboutBugReport">
+						<div class="row bugForm">
+							<div class="col-2-m">
+								<label><strong>Your Email</strong></label>
+							</div>
+							<div class="col-10-m">
+								<input type="text" id="email" name="email" class="field">
+								<div id="emailErrorMsg" class="errorMsg"></div>
+							</div>
+						</div>
+						<div class="row bugForm">
+							<div class="col-2-m">
+								<label><strong>Subject</strong></label>
+							</div>
+							<div class="col-10-m">
+								<input type="text" id="subject" name="subject" class="field">
+								<div id="subjectErrorMsg" class="errorMsg"></div>
+							</div>
+						</div>
+						<div class="row bugForm">
+							<div class="col-2-m">
+								<label><strong>Message</strong></label>
+							</div>
+							<div class="col-10-m">
+								<textarea id="message" name="message" class="field" cols="20" rows="5"></textarea>
+								<div id="messageErrorMsg" class="errorMsg"></div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-12-m"></div>
+						</div>
+						<div class="row bugForm">
+							<div class="col-12-m text-right">
+								<button id="bugReportButton" class="button imageSearchButton" onclick="sendBugReport(); return false;">Send</button>
+								<div id="bugReportSent"></div>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+			<script src="js/formValidator.js"></script>
+		</section>
+    </script>
+
+    <!-- =============================== CONTENT - EXAMPLES - loaded with ajax from examples.html ========================================== -->
+
+    <script type="text/content" id="content-examples">
+    </script>
+
+    <!-- =============================== CONTENT - DOCUMENTATION ========================================== -->
+	<script type="text/content" id="content-documentation-header">
+		<section id="sandboxContent" class="container-full">
+			<div class="row">
+				<div class="col-full">
+					<div class="col-4-m">
+						<h1>ePANDDA API Documentation</h1>
+					</div>
+					<div id="docNav" class="col-8-m">
+						<h4><a href="#" onclick="$(window).scrollTop($('#endpoints').offset().top-50); return false">Endpoints</a> | <a href="#" onclick="$(window).scrollTop($('#documentation-examples').offset().top-40); return false">Examples</a> | <a href="#" onclick="$(window).scrollTop($('#overview').offset().top-40); return false">Overview</a></h4>
+					</div>
+				</div>
+			</div>
+		</section>
+	</script>
+    <script type="text/content" id="content-documentation">
+    </script>
+    <script type="text/content" id="content-documentation2">
+    </script>
+
+    <!-- =============================== CONTENT - SANDBOX ========================================== -->
+
+    <script type="text/content" id="content-sandbox">
+        <section id="sandboxContent" class="container-full">
+			<div class="row">
+				<div class="col-12 col-6-m">
+                    <div class="row">
+                        <div class="col-12">
+        					<h1>Sandbox</h1>
+        					<div class="form-group" id="apiDropdownContainer">
+        					</div>
+        					<!--<div class="formTabs">
+        						<a href="#" onClick="renderForm('geonames', '#apiForm'); clearResults('#apiResultsContainer'); $('.formTabs .button').removeClass('highlight'); $('.formTabs .geonames').addClass('highlight'); return false;" class="button geonames highlight">Geographic Names Form</a>
+        						<a href="#" onClick="renderForm('publications', '#apiForm'); clearResults('#apiResultsContainer'); $('.formTabs .button').removeClass('highlight'); $('.formTabs .publications').addClass('highlight'); return false;" class="button publications">Publications Form</a>
+        						<a href="#" onClick="renderForm('occurrences', '#apiForm'); clearResults('#apiResultsContainer'); $('.formTabs .button').removeClass('highlight'); $('.formTabs .occurrences').addClass('highlight'); return false;" class="button occurrences">Occurrences Form</a>
+        					</div>-->
+        					<div id="apiFormContainer">
+        						<form id="apiForm">
+        							<H2 id='apiFormLabel'></H2>
+        							<p id='apiFormDescription'></p>
+        							<div id="apiFormElements">
+
+        							</div>
+        						</form>
+        						<button class="button" onClick="processForm($('#apiForm').serializeArray(), '#apiResultsContainer', 100, 0); return false;">Search</button>
+        					</div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+        					<div class="row">
+        						<div class="col-12 text-center">
+        							<br/><h3><strong>File a Bug Report</strong></h3>
+        						</div>
+        					</div>
+        					<div class="row">
+        						<div class="col-6 text-center">
+        							<h3><strong><a href="https://github.com/ePandda/ePandda-API/issues" target="_blank"><i class="fa fa-github"></i> Github</a></strong></h3>
+        						</div>
+        						<div class="col-6 text-center">
+        							<h3><strong><a id="bugFormToggle" href=""><i class="fa fa-envelope-o"></i> Email</a></strong></h3>
+        						</div>
+        					</div>
+        					<br/>
+        					<form id="bugReport">
+        						<div class="row bugForm">
+        							<div class="col-2-m">
+        								<label><strong>Your Email</strong></label>
+        							</div>
+        							<div class="col-10-m">
+        								<input type="text" id="email" name="email" class="field">
+        								<div id="emailErrorMsg" class="errorMsg"></div>
+        							</div>
+        						</div>
+        						<div class="row bugForm">
+        							<div class="col-2-m">
+        								<label><strong>Subject</strong></label>
+        							</div>
+        							<div class="col-10-m">
+        								<input type="text" id="subject" name="subject" class="field">
+        								<div id="subjectErrorMsg" class="errorMsg"></div>
+        							</div>
+        						</div>
+        						<div class="row bugForm">
+        							<div class="col-2-m">
+        								<label><strong>Message</strong></label>
+        							</div>
+        							<div class="col-10-m">
+        								<textarea id="message" name="message" class="field" cols="20" rows="5"></textarea>
+        								<div id="messageErrorMsg" class="errorMsg"></div>
+        							</div>
+        						</div>
+        						<div class="row">
+        							<div class="col-12-m"></div>
+        						</div>
+        						<div class="row bugForm">
+        							<div class="col-12-m text-right">
+        								<button id="bugReportButton" class="button imageSearchButton" onclick="sendBugReport(); return false;">Send</button>
+        								<div id="bugReportSent"></div>
+        							</div>
+        						</div>
+        					</form>
+        				</div>
+        			</div>
+                </div>
+                <div class="col-12 col-6-m">
+                	<div class="row">
+                		<div class="col-12">
+							<div id="apiResultsContainer">
+								<H2 id="apiResultsLabel"></H2>
+								<div id="apiResultsCounts"></div>
+								<div id="apiResultsURL"></div>
+								<div id="apiResultsButtons" class="row"></div>
+								<div id="apiUIResultsContainer"></div>
+								<div id="apiResultsJSON"></div>
+								<div id="apiLoadAdditionalResult"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<br/>
+			<script src="js/formValidator.js"></script>
+		</section>
+    </script>
+
+
+
+
+
+
+
+
+
+
+
+
+    <script src="js/vendor/lodash.js"></script>
+    <script src="js/vendor/jquery.min.js"></script>
+
+    <script src="js/vendor/navigo.min.js"></script>
+    <!--<script src="js/vendor/handlebars.min.js"></script>-->
+
+
+    <!--<script src="js/vendor/slick.min.js"></script>-->
+    <script src="js/vendor/countUp.min.js"></script>
+    <script src="js/vendor/flipWords.js"></script>
+    <script src="js/vendor/moment.min.js"></script>
+    <script src="js/default.js"></script>
+    <script src="js/navigoScripts.js"></script>
+    <script src="js/apiForm.js"></script>
+
+    <!--<script src="https://unpkg.com/vue"></script>-->
+
+    <!-- Google Analytics: change UA-XXXXX-Y ID -->
+    <script>
+        window.ga = function() {
+            ga.q.push(arguments)
+        };
+        ga.q = [];
+        ga.l = +new Date;
+        ga('create', 'UA-XXXXX-Y', 'auto');
+        ga('send', 'pageview')
+    </script>
+    <script src="https://www.google-analytics.com/analytics.js" async defer></script>
+
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAV0UQ1OJmq78zqZeHjcsldYp_VWUmsPwg&libraries=places"></script>
+
+
+</body>
+
+</html>

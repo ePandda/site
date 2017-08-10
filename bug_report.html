@@ -1,0 +1,59 @@
+<div class="container-full">
+	<div class="row">
+		<div class="col-12 col-6-m">
+			<div class="row">
+				<div class="col-12 text-center">
+					<h3><strong>File a Bug Report</strong></h3>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-6 text-center">
+					<h3><strong><a href="https://github.com/ePandda/ePandda-API/Issues" target="_blank"><i class="fa fa-github"></i> Github</a></strong></h3>
+				</div>
+				<div class="col-6 text-center">
+					<h3><strong><a id="bugFormToggle" href=""><i class="fa fa-envelope-o"></i> Email</a></strong></h3>
+				</div>
+			</div>
+			<br/>
+			<form id="bugReport">
+				<div class="row bugForm">
+					<div class="col-2-m">
+						<label><strong>Your Email</strong></label>
+					</div>
+					<div class="col-10-m">
+						<input type="text" id="email" name="email" class="field">
+						<div id="emailErrorMsg" class="errorMsg"></div>
+					</div>
+				</div>
+				<div class="row bugForm">
+					<div class="col-2-m">
+						<label><strong>Subject</strong></label>
+					</div>
+					<div class="col-10-m">
+						<input type="text" id="subject" name="subject" class="field">
+						<div id="subjectErrorMsg" class="errorMsg"></div>
+					</div>
+				</div>
+				<div class="row bugForm">
+					<div class="col-2-m">
+						<label><strong>Message</strong></label>
+					</div>
+					<div class="col-10-m">
+						<textarea id="message" name="message" class="field" cols="20" rows="5"></textarea>
+						<div id="messageErrorMsg" class="errorMsg"></div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-12-m"></div>
+				</div>
+				<div class="row bugForm">
+					<div class="col-12-m text-right">
+						<button id="bugReportButton" class="button imageSearchButton" onclick="sendBugReport(); return false;">Send</button>
+						<div id="bugReportSent"></div>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+<script src="js/formValidator.js"></script>
