@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+    <title>Image Search by Taxonomy</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <style>
+    	
+    	div {
+    		display: block;
+    	}
+    	
+    	* {
+    		font-family: arial, 'sans-serif';
+    		box-sizing: border-box;
+    		overflow: auto;
+    	}
+    	
+    	a{
+    		color: #009345;
+    	}
+    	
+    	a:hover{
+    		color: #8bc53f;
+    	}
+    	
+    	h5{
+    		margin: 0
+    	}
+    	
+    	#imageSearchBody{
+    		width: 90%;
+    		padding: 0 4.5%;
+    	}
+    	
+    	.row{
+    		position: relative;
+    		margin: 0 -15px;
+    		height: inherit;
+    	}
+    	
+    	#taxonTerm {
+    		height: 35px;
+    		font-size: 14px;
+    		padding-left: 10px;
+    	}
+    	
+		.imageSearchButton{
+			height: 40px;
+			margin-left: 20px;
+			padding: 0 20px;
+			background-color: #f3f3f3;
+			border: 1px solid #d7d7d7;
+			font-size: 16px
+		}
+
+		.pagingButton{
+			height: 25px;
+			padding: 0 20px;
+		}
+
+		.imageResult{
+			font-size: 11px;
+			padding: 0 15px;
+			position: relative;
+			float: left;
+			width: 33.3333%;
+		}
+
+		.imageResult a{
+			line-height: 22px;
+		}
+
+		.imageResult img{
+			width: 100%;
+			max-height: 400px;
+		}
+
+		.imagePlaceholder{
+			text-align: center;
+			padding: 76px 0 76px;
+			background-color: #fff;
+			border: 1px solid #d7d7d7;
+			font-size: 12px;
+		}
+
+		.imagePlaceholder i{
+			color: #d7d7d7;
+		}
+
+		#idbImages{
+			min-height: 250px;
+			border: 1px solid#d7d7d7;
+			background-color: #f3f3f3;
+			padding: 10px;
+			margin: 10px 0;
+
+		}
+
+		#idbImagePaging{
+			text-align: center;
+		}
+		
+		.centerThird{
+			width: 33.3333%;
+			left: 33.33333%;
+			position: relative;
+			float: left;
+			padding: 0 15px;
+		}
+		
+		#idbPagingPrev, #idbPagingText, #idbPagingNext{
+			width: 33.3333%;
+			position: relative;
+			float: left;
+			padding: 0 15px;
+		}
+		
+		.pagingButton{
+			padding: 0 20px;
+			background-color: #f3f3f3;
+			border: 1px solid #d7d7d7;
+			font-size: 16px
+		}
+		
+    </style>
+  </head>
+  <body>
+  	<div id="imageSearchBody">
+		<div class="mainSearch">
+			<div class="search Text">
+				<br/>
+				<br/>
+				<h1>Image Search</h1>
+				<p>Search for any taxa and view images contributed to iDigBio that match that term, results include links to the iDigBio record for each associated specimen.<br/>Search terms can be broad or specific and include be either scientific or vernacular names such as: <strong>scorpiones</strong>, <strong>hadrosaurus</strong>, <strong>triceratops</strong> or <strong>ursus arctos</strong></p>
+				<form id="imageSearch">
+					<label><strong>Taxonomic Term </strong></label>
+					<input type="text" id="taxonTerm" name="taxonTerm">
+					<button class="button imageSearchButton" onclick="getTaxaImages($('#taxonTerm').val(), 12, 0); return false;">Search</button>
+				</form>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-full">
+				<div id="idbImages"></div>
+				<div id="idbImagePaging" class="row">
+					<div class="centerThird">
+						<div class="row">
+							<div id="idbPagingPrev"></div>
+							<div id="idbPagingText"></div>
+							<div id="idbPagingNext"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+    <script >
+		function getTaxaImages(taxon, limit, page){
+			var taxonURL = 'https://api.epandda.org/taxonomy?fullTaxonomy=' + taxon + '&images=true'
+			var counter = 0;
+			var rowCounter = 0;
+			var offset = page * 12;
+			var tempString = '';
+			$('#idbImages').html("<h1>Loading...</h1>");
+			$.ajax({
+				url: taxonURL,
+				method: "GET",
+				dataType: "json",
+				crossDomain: "true",
+				success: function(data){
+					$('#idbImages').html('');
+					var mediaURIs = data.media;
+					var mediaCount = mediaURIs.length;
+					if(mediaCount == 0){
+						$('#idbImages').html('<div class="coll-full"><h3>No Image Results for that term</h3></div>');
+						$('#idbPagingPrev').html('');
+						$('#idbPagingText').html('');
+						$('#idbPagingNext').html('');
+						return false;
+					}
+
+					$('#idbImages').append("<div class='row'>");
+					mediaURIs.forEach(function(uri){
+						if(counter < (limit + offset) && counter >= offset){
+							imageExists(uri[1], function(exists){
+								console.log(exists);
+								if(exists != true){
+									var replaceDiv = $('[src="'+ uri[1] + '"]').parent();
+									replaceDiv.html('<div class="imagePlaceholder"><i class="fa fa-image fa-5x"></i><br/>Unable to load image:<br/><a href="' + uri[1] + '">' + uri[1] + '</a></div><a href="' + uri[0] + '" target="_blank" ">iDigBio Record</a>');
+								}
+							});
+							tempString += '<div class="imageResult"><img src="' + uri[1] + '"/><a href="' + uri[0] + '" target="_blank" ">iDigBio Record</a></div>';
+							rowCounter++;
+							if(rowCounter % 3 == 0){
+								$('#idbImages').append('<div class="row">' + tempString + "</div>");
+								tempString = '';
+							}
+						}
+						counter++;
+
+					});
+					if(rowCounter % 3 != 0){
+						$('#idbImages').append('<div class="row">' + tempString + "</div>");
+					}
+					var pages = Math.ceil(mediaCount/limit);
+					if($('#idbPagingPrev').html() == ''){
+						$('#idbPagingPrev').html('<button class="button pagingButton" onclick="getTaxaImages(\'' + taxon + '\', ' + limit + ', '+ (page - 1) + '); $(window).scrollTop($(\'#idbImages\').offset().top-50); return false;">Prev</button>');
+					}
+					if($('#idbPagingNext').html() == ''){
+						$('#idbPagingNext').html('<button class="button pagingButton" onclick="getTaxaImages(\'' + taxon + '\', ' + limit + ', '+ (page + 1) + '); $(window).scrollTop($(\'#idbImages\').offset().top-50); return false;">Next</button>');
+					}
+					if(page+1 > 1){
+						$('#idbPagingPrev').html('<button class="button pagingButton" onclick="getTaxaImages(\'' + taxon + '\', ' + limit + ', '+ (page - 1) + '); $(window).scrollTop($(\'#idbImages\').offset().top-50); return false;">Prev</button>');
+					} else {
+						$('#idbPagingPrev .pagingButton').addClass('disabled');
+					}
+					$('#idbPagingText').html('<h5>Page ' + (page + 1) + '/' + pages + '</h5>');
+					if(page+1 < pages){
+						$('#idbPagingNext').html('<button class="button pagingButton" onclick="getTaxaImages(\'' + taxon + '\', ' + limit + ', '+ (page + 1) + '); $(window).scrollTop($(\'#idbImages\').offset().top-50); return false;">Next</button>');
+					} else {
+						$('#idbPagingNext .pagingButton').addClass('disabled');
+					}
+				}
+			});
+		}
+		
+		function imageExists(url, callback) {
+		  var img = new Image();
+		  img.onload = function() { callback(true); };
+		  img.onerror = function() { callback(false); };
+		  img.src = url;
+		}
+    </script>
+  	<script>
+		jQuery( document ).ready(function() {
+			initMap();
+		});
+	</script>
+  </body>
+</html>
