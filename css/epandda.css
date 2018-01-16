@@ -143,11 +143,13 @@ a {
 #apiUIResultsContainer{
 	margin-bottom: 15px;
 	display: visible;
+	max-height: 500px;
+	overflow: scroll;
 }
 
 #apiUIResultsList{
 	background-color: #ededed;
-	border: 1px solid #d7d7d7;
+	
 	padding: 5px 15px;
 }
 
@@ -254,10 +256,19 @@ a {
 	width: 400px;
   }
 
-  #pac-input:focus {
+  #pac-input:focus, #radius-input:focus {
 	border-color: #4d90fe;
   }
-
+  
+  #radius-input{
+   	background-color: #fff;
+    font-family: Roboto;
+    font-size: 15px;
+    font-weight: 300;
+    padding: 0 11px 0 13px;
+    text-overflow: ellipsis;
+    width: 130px;
+  }
 
 /* ==================================================== */
 /* image search											*/

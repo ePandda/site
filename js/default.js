@@ -15,7 +15,6 @@ $(document).ready(function(){
 		$('#content-examples').text(data);
 	});
 	$.get('bug_report.html', function(data){
-		console.log('Does this fire?');
 		$('#sandboxContent').append(data);
 	});
 
@@ -43,6 +42,8 @@ $(document).ready(function(){
   // failed.", it means you probably did not give permission for the browser to
   // locate you.
 	var map, infoWindow;
+	var geoRadius = 10;
+	var markers = [];
 	function initMap() {
 		var initPos = {lat: 38.770792, lng: -104.320253 };
 		map = new google.maps.Map(document.getElementById('map'), {
@@ -55,10 +56,12 @@ $(document).ready(function(){
 		infoWindow.open(map);
 		map.setCenter(initPos);
 		
-		// Create the search box and link it to the UI element.
-        var input = document.getElementById('pac-input');
-        var searchBox = new google.maps.places.SearchBox(input);
-        map.controls[google.maps.ControlPosition.TOP_RIGHT].push(input);
+		var input = document.getElementById('pac-input');
+		var radius_input = document.getElementById('radius-input');
+		var searchBox = new google.maps.places.SearchBox(input);
+		map.controls[google.maps.ControlPosition.TOP_RIGHT].push(radius_input);
+		map.controls[google.maps.ControlPosition.TOP_RIGHT].push(input);
+
 
         // Bias the SearchBox results towards current map's viewport.
         map.addListener('bounds_changed', function() {
@@ -82,7 +85,7 @@ $(document).ready(function(){
 			  lat: place.geometry.location.lat(),
 			  lng: place.geometry.location.lng()
 			};
-            plotSpecimen(map, infoWindow, pos);
+            plotSpecimen(map, infoWindow, pos, geoRadius);
 
             if (place.geometry.viewport) {
               // Only geocodes have viewport.
@@ -102,7 +105,7 @@ $(document).ready(function(){
 			  lng: position.coords.longitude
 			};
 			infoWindow.setPosition(pos);
-			plotSpecimen(map, infoWindow, pos);
+			plotSpecimen(map, infoWindow, pos, geoRadius);
 		  }, function() {
 			handleLocationError(true, infoWindow, map.getCenter());
 		  });
@@ -117,8 +120,28 @@ $(document).ready(function(){
 					  lat: map.getCenter().lat(),
 					  lng: map.getCenter().lng()
 					};
-				plotSpecimen(map, infoWindow, newpos);
+				plotSpecimen(map, infoWindow, newpos, geoRadius);
 			});
+		});
+		// If radius changed, re-load markers
+		jQuery('#radius-input').on('change', function(){
+			
+			var newGeoRadius = jQuery('#radius-input').val();
+			if(newGeoRadius && newGeoRadius <= 100){
+				for (var i = 0; i < markers.length; i++) {
+					markers[i].setMap(null);
+				}
+				markers = [];
+			
+				var pos = {
+					lat: map.getCenter().lat(),
+					lng: map.getCenter().lng()
+				};
+				plotSpecimen(map, infoWindow, pos, newGeoRadius);
+				geoRadius = newGeoRadius;
+			} else {
+				geoRadius = 10;
+			}
 		});
 	}
 
@@ -130,8 +153,9 @@ $(document).ready(function(){
 		infoWindow.open(map);
 	}
 
-    function plotSpecimen(map, infoWindow, pos){
-		$.getJSON( 'https://api.epandda.org/geonames?geoPoint=' + pos.lat + ', ' + pos.lng + '&geoRadius=10000&limit=500', function( data ) {
+    function plotSpecimen(map, infoWindow, pos, geoRadius){
+		var geoRadiusMeters = geoRadius * 1000;
+		$.getJSON( 'https://api.epandda.org/geonames?geoPoint=' + pos.lat + ', ' + pos.lng + '&geoRadius=' + geoRadiusMeters +'&limit=500', function( data ) {
 			specimens_results = data;
 			// add all the specimen points to the map
 			var specimens;
@@ -144,10 +168,11 @@ $(document).ready(function(){
 			infoWindow.setPosition(pos);
 			infoWindow.setContent(specimens_results.counts.totalCount + ' specimens found in this area');
 			infoWindow.open(map);
+			markers.push(infoWindow);
 			map.setCenter(pos);
 
 		});
-    }
+	}
     function placeSpecimenMarkers(specimenResults, infowindow) {
       var marker, i;
       var markerData = {};
@@ -223,6 +248,7 @@ $(document).ready(function(){
 				map: map,
 				title: c
 			});
+			markers.push(marker);
 			var markerDisplay = markerData[markerLatLng]["display"].join("<br/><br/>");
 			google.maps.event.addListener(marker, 'click', (function(marker, markerDisplay) {
 				return function() {
@@ -369,12 +395,9 @@ function getTaxaImages(taxon, limit, page){
 			$('#idbImages').append("<div class='row'>");
 			mediaURIs.forEach(function(uri){
 				if(counter < (limit + offset) && counter >= offset){
-					imageExists(uri[1], function(exists){
-						console.log(exists);
-						if(exists != true){
+					$('[src="'+ uri[1] + '"]').error(function(){
 							var replaceDiv = $('[src="'+ uri[1] + '"]').parent();
 							replaceDiv.html('<div class="imagePlaceholder"><i class="fa fa-image fa-5x"></i><br/>Unable to load image:<br/><a href="' + uri[1] + '">' + uri[1] + '</a></div><a href="' + uri[0] + '" target="_blank" ">iDigBio Record</a>');
-						}
 					});
 					tempString += '<div class="col-4 imageResult"><img src="' + uri[1] + '"/><a href="' + uri[0] + '" target="_blank" ">iDigBio Record</a></div>';
 					rowCounter++;
@@ -411,11 +434,20 @@ function getTaxaImages(taxon, limit, page){
 	});
 }
 
-function imageExists(url, callback) {
-  var img = new Image();
-  img.onload = function() { callback(true); };
-  img.onerror = function() { callback(false); };
-  img.src = url;
+function urlChecker(url, callback) {
+	$.ajax({
+		url: url,
+		dataType: 'jsonp',
+		type: 'HEAD',
+		crossDomain: true,
+		complete: function(xhr){
+			callback.apply(this, [xhr.status]);
+		}
+	});
+  //var img = new Image();
+  //img.onload = function() { callback(true); };
+  //img.onerror = function() { callback(false); };
+  //img.src = url;
 }
 
 // ====================================================================

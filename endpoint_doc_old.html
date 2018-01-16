@@ -1,20 +1,56 @@
 
 <section id="documentation-endpoint" class="container-full">
-<div class="row">
-	<div class="col-12-s">
-		<h1>ePANDDA Endpoint Documentation</h1>
+<div id="endpoints" class="row">
+	<div class="col-12">
+		<h1>Endpoints</h1>
+		<p>
+			The ePandda public API supports HTTP GET search requests for the following endpoints: Publications, Occurrences and Geonames.
+		</p>
+		<p>
+			The API is a RESTful web service that delivers data as JSON documents. All GET requests must be URL-encoded.
+		</p>
 	</div>
 </div>
- 
+	 
 <div class="row">
-	<div class="col-12-s">
-		<h2>publications</h2>
-		<p>Returns specimen occurrence and publication records for a given scientific name. results can be filtered by the optional params</p>
+	<div class="col-12">
+		<h2>lithostratigraphy</h2>
+		<p>Returns specimens matching lithostratigraphic units</p>
 			 
 		<table class="parameterTable">
 			<tr>
 				<th>Name</th>
-				<th>Label</th>
+				<th>Type</th>
+				<th>Required?</th>
+				<th>Description</th>
+			</tr>
+			 
+			<tr>
+				<td>lithostratigraphy</td>
+				<td>text</td>
+				<td>False</td>
+				<td>Search on the full lithostratigraphic hierarchy </td>
+			</tr>
+					 
+			<tr>
+				<td>rank</td>
+				<td>text</td>
+				<td>False</td>
+				<td>Limit your search to a lithostratigraphic rank. Accepted values are: Bed, Member, Formation & Group</td>
+			</tr>
+					 
+		</table>
+	</div>
+</div>
+			 
+<div class="row">
+	<div class="col-12">
+		<h2>publications</h2>
+		<p>Returns specimen and publication records for a given scientific name. Results may be filtered using the available parameters.</p>
+			 
+		<table class="parameterTable">
+			<tr>
+				<th>Name</th>
 				<th>Type</th>
 				<th>Required?</th>
 				<th>Description</th>
@@ -22,15 +58,13 @@
 			 
 			<tr>
 				<td>scientific_name</td>
-				<td></td>
 				<td>text</td>
-				<td>True</td>
+				<td>False</td>
 				<td>Taxon to search occurrence records for</td>
 			</tr>
 					 
 			<tr>
 				<td>journal</td>
-				<td></td>
 				<td>text</td>
 				<td>False</td>
 				<td>Then name of academic Journal a publication would be found</td>
@@ -38,7 +72,6 @@
 					 
 			<tr>
 				<td>article</td>
-				<td></td>
 				<td>text</td>
 				<td>False</td>
 				<td>The name of the journal article the given scientific_name appears in</td>
@@ -46,15 +79,13 @@
 					 
 			<tr>
 				<td>author</td>
-				<td></td>
 				<td>text</td>
 				<td>False</td>
 				<td>The name of the author who's article describes the given scientific_name</td>
 			</tr>
 					 
 			<tr>
-				<td>state_province</td>
-				<td></td>
+				<td>stateProvinceName</td>
 				<td>text</td>
 				<td>False</td>
 				<td>The state/province to search for scientific_name and publication references</td>
@@ -62,7 +93,6 @@
 					 
 			<tr>
 				<td>county</td>
-				<td></td>
 				<td>text</td>
 				<td>False</td>
 				<td>The county to search for scientific_name and publication references</td>
@@ -70,10 +100,16 @@
 					 
 			<tr>
 				<td>locality</td>
-				<td></td>
 				<td>text</td>
 				<td>False</td>
 				<td>The locality name to search for scientific_name occurences and publication references</td>
+			</tr>
+					 
+			<tr>
+				<td>includeAnnotations</td>
+				<td>boolean</td>
+				<td>False</td>
+				<td>Toggles if OpenAnnotations section should be included or not</td>
 			</tr>
 					 
 		</table>
@@ -81,14 +117,65 @@
 </div>
 			 
 <div class="row">
-	<div class="col-12-s">
+	<div class="col-12">
+		<h2>stratigraphy</h2>
+		<p>Returns specimens matchting chronostratigraphic terms</p>
+			 
+		<table class="parameterTable">
+			<tr>
+				<th>Name</th>
+				<th>Type</th>
+				<th>Required?</th>
+				<th>Description</th>
+			</tr>
+			 
+			<tr>
+				<td>chronostratigraphy</td>
+				<td>text</td>
+				<td>False</td>
+				<td>Search on the a full chronostratigraphic hierarchy </td>
+			</tr>
+					 
+			<tr>
+				<td>stage</td>
+				<td>text</td>
+				<td>False</td>
+				<td>The chronostratigraphic Stage/Age. Searches both high/low</td>
+			</tr>
+					 
+			<tr>
+				<td>series</td>
+				<td>text</td>
+				<td>False</td>
+				<td>The chronostratigraphic Series/Epoch. Searches both high/low</td>
+			</tr>
+					 
+			<tr>
+				<td>system</td>
+				<td>text</td>
+				<td>False</td>
+				<td>The chronostratigraphic System/Period. Searches both high/low</td>
+			</tr>
+					 
+			<tr>
+				<td>erathem</td>
+				<td>text</td>
+				<td>False</td>
+				<td>The chronostratigraphic Erathem/Era. Searches both high/low</td>
+			</tr>
+					 
+		</table>
+	</div>
+</div>
+			 
+<div class="row">
+	<div class="col-12">
 		<h2>occurrences</h2>
 		<p>Returns specimens collected from a given locality</p>
 			 
 		<table class="parameterTable">
 			<tr>
 				<th>Name</th>
-				<th>Label</th>
 				<th>Type</th>
 				<th>Required?</th>
 				<th>Description</th>
@@ -96,34 +183,30 @@
 			 
 			<tr>
 				<td>taxon_name</td>
-				<td></td>
 				<td>text</td>
-				<td>True</td>
+				<td>False</td>
 				<td>The taxa to search occurrences for</td>
 			</tr>
 					 
 			<tr>
 				<td>locality</td>
-				<td></td>
 				<td>text</td>
 				<td>False</td>
 				<td>The locality name to bound taxonomic occurences to</td>
 			</tr>
 					 
 			<tr>
-				<td>period</td>
-				<td></td>
+				<td>chronostratigraphy</td>
 				<td>text</td>
-				<td></td>
+				<td>False</td>
 				<td>The geologic time period to filter taxon occurrences by</td>
 			</tr>
 					 
 			<tr>
-				<td>institution_code</td>
-				<td></td>
+				<td>lithostratigraphy</td>
 				<td>text</td>
-				<td></td>
-				<td>The abbreviated institution code that houses the taxon occurrence specimen</td>
+				<td>False</td>
+				<td>The lithostratigraphic unit to filter taxon occurrences by</td>
 			</tr>
 					 
 		</table>
@@ -131,14 +214,51 @@
 </div>
 			 
 <div class="row">
-	<div class="col-12-s">
+	<div class="col-12">
+		<h2>annotations</h2>
+		<p>Returns openAnnotations for linked data in ePANDDA.</p>
+			 
+		<table class="parameterTable">
+			<tr>
+				<th>Name</th>
+				<th>Type</th>
+				<th>Required?</th>
+				<th>Description</th>
+			</tr>
+			 
+			<tr>
+				<td>annotationDate</td>
+				<td>text</td>
+				<td>False</td>
+				<td>Filter annotation results by provided date ( simple date match ). Format annotationDate=YYYY-MM-DD</td>
+			</tr>
+					 
+			<tr>
+				<td>annotationDateAfter</td>
+				<td>text</td>
+				<td>False</td>
+				<td>Filter annotation results equal to or after provided date. Format annotationDateAfter=YYYY-MM-DD</td>
+			</tr>
+					 
+			<tr>
+				<td>annotationDateBefore</td>
+				<td>text</td>
+				<td>False</td>
+				<td>Filter annotation results before provided date. Format annotationDateBefore=YYYY-MM-DD</td>
+			</tr>
+					 
+		</table>
+	</div>
+</div>
+			 
+<div class="row">
+	<div class="col-12">
 		<h2>geonames</h2>
 		<p>Returns specimens collected from a given locality</p>
 			 
 		<table class="parameterTable">
 			<tr>
 				<th>Name</th>
-				<th>Label</th>
 				<th>Type</th>
 				<th>Required?</th>
 				<th>Description</th>
@@ -146,7 +266,6 @@
 			 
 			<tr>
 				<td>geolocation</td>
-				<td>Full Text Geographic Search</td>
 				<td>text</td>
 				<td>False</td>
 				<td>A generic place name, will search across locality, county, state/province and country fields</td>
@@ -154,7 +273,6 @@
 					 
 			<tr>
 				<td>countryName</td>
-				<td>Country Name</td>
 				<td>text</td>
 				<td>False</td>
 				<td>Full country names</td>
@@ -162,7 +280,6 @@
 					 
 			<tr>
 				<td>countryCode</td>
-				<td>Country Code (2-Letter)</td>
 				<td>text</td>
 				<td>False</td>
 				<td>2-letter country code, provided from geonames.org</td>
@@ -170,7 +287,6 @@
 					 
 			<tr>
 				<td>stateProvinceName</td>
-				<td>State/Province Name</td>
 				<td>text</td>
 				<td>False</td>
 				<td>State or province name. Do not include qualifiers (e.g. State, Province) to return better results</td>
@@ -178,7 +294,6 @@
 					 
 			<tr>
 				<td>stateProvinceCode</td>
-				<td>State Province Code (2-Letter or 2-Digit)</td>
 				<td>text</td>
 				<td>False</td>
 				<td>State or province name. Do not include qualifiers (e.g. State, Province) to return better results</td>
@@ -186,7 +301,6 @@
 					 
 			<tr>
 				<td>county</td>
-				<td>County Name</td>
 				<td>text</td>
 				<td>False</td>
 				<td>County name. Do not add "County" to your search string</td>
@@ -194,7 +308,6 @@
 					 
 			<tr>
 				<td>locality</td>
-				<td>Locality Name</td>
 				<td>text</td>
 				<td>False</td>
 				<td>The specific locality where a specimen was recorded</td>
@@ -202,18 +315,16 @@
 					 
 			<tr>
 				<td>geoPoint</td>
-				<td>Geographic Point (Longitude, Latitude)</td>
 				<td>text</td>
 				<td>False</td>
-				<td>The Longitude, Latitude to search on. Provide a comma separated string. IMPORTANT geoJSON requries LONGITUDE first.</td>
+				<td>The Latitude, Longitude to search on. Provide a comma separated string with no space (e.g. '-103.2,29.2').</td>
 			</tr>
 					 
 			<tr>
 				<td>geoRadius</td>
-				<td>Distance from Geographic Point in Meters</td>
 				<td>text</td>
 				<td>False</td>
-				<td>The distance from the provided geoPoint to search within, in meters</td>
+				<td>The distance from the provided geoPoint to search within, in meters. Provide only the distance with no units</td>
 			</tr>
 					 
 		</table>
@@ -221,14 +332,107 @@
 </div>
 			 
 <div class="row">
-	<div class="col-12-s">
-		<h2>stats</h2>
-		<p>Returns general API statistical information</p>
+	<div class="col-12">
+		<h2>taxonomy</h2>
+		<p>Returns specimens matchting taxonomic terms</p>
 			 
 		<table class="parameterTable">
 			<tr>
 				<th>Name</th>
-				<th>Label</th>
+				<th>Type</th>
+				<th>Required?</th>
+				<th>Description</th>
+			</tr>
+			 
+			<tr>
+				<td>fullTaxonomy</td>
+				<td>text</td>
+				<td>False</td>
+				<td>A search across all levels of of the taxonomic hierarchy</td>
+			</tr>
+					 
+			<tr>
+				<td>scientificName</td>
+				<td>text</td>
+				<td>False</td>
+				<td>A specific scientific name, including or not including scientific name authorship and year</td>
+			</tr>
+					 
+			<tr>
+				<td>species</td>
+				<td>text</td>
+				<td>False</td>
+				<td>The species (specific epithet) of the specimen</td>
+			</tr>
+					 
+			<tr>
+				<td>genus</td>
+				<td>text</td>
+				<td>False</td>
+				<td>Genus name</td>
+			</tr>
+					 
+			<tr>
+				<td>family</td>
+				<td>text</td>
+				<td>False</td>
+				<td>Family name</td>
+			</tr>
+					 
+			<tr>
+				<td>order</td>
+				<td>text</td>
+				<td>False</td>
+				<td>Order name</td>
+			</tr>
+					 
+			<tr>
+				<td>class</td>
+				<td>text</td>
+				<td>False</td>
+				<td>Class name</td>
+			</tr>
+					 
+			<tr>
+				<td>phylum</td>
+				<td>text</td>
+				<td>False</td>
+				<td>Phylum name</td>
+			</tr>
+					 
+			<tr>
+				<td>kingdom</td>
+				<td>text</td>
+				<td>False</td>
+				<td>Kingdom name</td>
+			</tr>
+					 
+			<tr>
+				<td>other</td>
+				<td>text</td>
+				<td>False</td>
+				<td>Other terms such as superFamily, 'above family' as well as a generic 'noRank' field</td>
+			</tr>
+					 
+			<tr>
+				<td>images</td>
+				<td>boolean</td>
+				<td>False</td>
+				<td>Set to true to return images any images from iDigBio that match the search terms</td>
+			</tr>
+					 
+		</table>
+	</div>
+</div>
+			 
+<div class="row">
+	<div class="col-12">
+		<h2>stats</h2>
+		<p>Interesting API statistics</p>
+			 
+		<table class="parameterTable">
+			<tr>
+				<th>Name</th>
 				<th>Type</th>
 				<th>Required?</th>
 				<th>Description</th>
@@ -236,7 +440,6 @@
 			 
 			<tr>
 				<td>stateProvinces</td>
-				<td></td>
 				<td>boolean</td>
 				<td>False</td>
 				<td>The number of unique states represented in the collections</td>
@@ -244,7 +447,6 @@
 					 
 			<tr>
 				<td>countries</td>
-				<td></td>
 				<td>boolean</td>
 				<td>False</td>
 				<td>The number of unique countries represented in the collections</td>
@@ -252,7 +454,6 @@
 					 
 			<tr>
 				<td>counties</td>
-				<td></td>
 				<td>boolean</td>
 				<td>False</td>
 				<td>The number of unique counties represented in the collections</td>
@@ -260,7 +461,6 @@
 					 
 			<tr>
 				<td>localities</td>
-				<td></td>
 				<td>boolean</td>
 				<td>False</td>
 				<td>The number of unique localities represented in the collections</td>
@@ -268,7 +468,6 @@
 					 
 			<tr>
 				<td>geoPoints</td>
-				<td></td>
 				<td>boolean</td>
 				<td>False</td>
 				<td>The number of unique geographic coordinates represented in the collections</td>
@@ -276,7 +475,6 @@
 					 
 			<tr>
 				<td>totalRecords</td>
-				<td></td>
 				<td>boolean</td>
 				<td>False</td>
 				<td>The count of all specimen/occurrence records included in project from iDigBio and PBDB</td>
@@ -284,18 +482,9 @@
 					 
 			<tr>
 				<td>taxonomies</td>
-				<td></td>
 				<td>boolean</td>
 				<td>False</td>
 				<td>The number of unique taxonomic hierarchies represented in the collections</td>
-			</tr>
-					 
-			<tr>
-				<td>geoPoints</td>
-				<td></td>
-				<td>boolean</td>
-				<td>False</td>
-				<td>The number of unique geographic coordinates represented in the collections</td>
 			</tr>
 					 
 		</table>
@@ -303,3 +492,4 @@
 </div>
 			 
 </section>
+	
