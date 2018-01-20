@@ -14,8 +14,8 @@ var routing = function (mode) {
       addContent("content-sandbox", "content-body");
       addContent("component-footer", "content-body");
       window.scrollTo(0, 0);
-      renderFormDropdown('#apiDropdownContainer', '#apiFormContainer');
-    					
+      //renderFormDropdown('#apiDropdownContainer', '#apiFormContainer');
+	  renderForm('es_occurrences', '#apiFormContainer')
 
     },
     'documentation': function () {
@@ -59,7 +59,7 @@ var routing = function (mode) {
       addContent("component-footer", "content-body");
       window.scrollTo(0, 0);
       getPhyloPics();
-      
+
       setHomePageStats();
     }
   });
@@ -72,9 +72,9 @@ var routing = function (mode) {
       addContent("component-colorbars", "content-body");
       addContent("component-nsf", "content-body");
       addContent("component-footer", "content-body");
-      
+
       getPhyloPics();
-      
+
       setHomePageStats();
   });
   router.resolve();

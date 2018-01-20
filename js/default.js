@@ -22,7 +22,7 @@ $(document).ready(function(){
 	//	$('#content-about').append(data);
 	//});
 	$.ajax({
-		url: 'https://api.epandda.org/stats?totalRecords=1',
+		url: 'http://localhost:5000/stats?totalRecords=1',
 		method: "GET",
 		dataType: "json",
 		crossDomain: "true",
@@ -55,7 +55,7 @@ $(document).ready(function(){
 		infoWindow.setContent('Please wait while we locate your position');
 		infoWindow.open(map);
 		map.setCenter(initPos);
-		
+
 		var input = document.getElementById('pac-input');
 		var radius_input = document.getElementById('radius-input');
 		var searchBox = new google.maps.places.SearchBox(input);
@@ -125,14 +125,14 @@ $(document).ready(function(){
 		});
 		// If radius changed, re-load markers
 		jQuery('#radius-input').on('change', function(){
-			
+
 			var newGeoRadius = jQuery('#radius-input').val();
 			if(newGeoRadius && newGeoRadius <= 100){
 				for (var i = 0; i < markers.length; i++) {
 					markers[i].setMap(null);
 				}
 				markers = [];
-			
+
 				var pos = {
 					lat: map.getCenter().lat(),
 					lng: map.getCenter().lng()
@@ -155,7 +155,7 @@ $(document).ready(function(){
 
     function plotSpecimen(map, infoWindow, pos, geoRadius){
 		var geoRadiusMeters = geoRadius * 1000;
-		$.getJSON( 'https://api.epandda.org/geonames?geoPoint=' + pos.lat + ', ' + pos.lng + '&geoRadius=' + geoRadiusMeters +'&limit=500', function( data ) {
+		$.getJSON( 'http://localhost:5000/geonames?geoPoint=' + pos.lat + ', ' + pos.lng + '&geoRadius=' + geoRadiusMeters +'&limit=500', function( data ) {
 			specimens_results = data;
 			// add all the specimen points to the map
 			var specimens;
@@ -328,7 +328,7 @@ function setHomePageStats() {
 
 
 	$.ajax({
-		url: 'https://api.epandda.org/stats?totalRecords=1',
+		url: 'http://localhost:5000/stats?totalRecords=1',
 		method: "GET",
 		dataType: "json",
 		crossDomain: "true",
@@ -339,7 +339,7 @@ function setHomePageStats() {
 		}
 	});
 	$.ajax({
-		url: 'https://api.epandda.org/stats?taxonomies=1',
+		url: 'http://localhost:5000/stats?taxonomies=1',
 		method: "GET",
 		dataType: "json",
 		crossDomain: "true",
@@ -350,7 +350,7 @@ function setHomePageStats() {
 		}
 	});
 	$.ajax({
-		url: 'https://api.epandda.org/stats?localities=1',
+		url: 'http://localhost:5000/stats?localities=1',
 		method: "GET",
 		dataType: "json",
 		crossDomain: "true",
@@ -368,7 +368,7 @@ function setHomePageStats() {
 
 function getTaxaImages(taxon, limit, page){
 
-	var taxonURL = 'https://api.epandda.org/taxonomy?fullTaxonomy=' + taxon + '&images=true'
+	var taxonURL = 'http://localhost:5000/taxonomy?fullTaxonomy=' + taxon + '&images=true'
 	var counter = 0;
 	var rowCounter = 0;
 	var offset = page * 12;
@@ -390,7 +390,7 @@ function getTaxaImages(taxon, limit, page){
 				$('#idbPagingNext').html('');
 				return false;
 			}
-			//mediaURIs.push(['https://google.com', 'http://arctos.database.museum/media/10323136']);
+			//mediaURIs.push(['http://google.com', 'http://arctos.database.museum/media/10323136']);
 
 			$('#idbImages').append("<div class='row'>");
 			mediaURIs.forEach(function(uri){
@@ -469,7 +469,7 @@ function sendBugReport(){
 		var sendData = $("#BugReport").serialize();
 	}
 	$.ajax({
-		url: 'https://api.epandda.org/bugReport',
+		url: 'http://localhost:5000/bugReport',
 		method: "POST",
 		data: sendData,
 		dataType: "json",

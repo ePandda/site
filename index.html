@@ -492,100 +492,110 @@
     <script type="text/content" id="content-sandbox">
         <section id="sandboxContent" class="container-full">
 			<div class="row">
-				<div class="col-12 col-6-m">
-                    <div class="row">
-                        <div class="col-12">
-        					<h1>Sandbox</h1>
-        					<div class="form-group" id="apiDropdownContainer">
-        					</div>
-        					<!--<div class="formTabs">
-        						<a href="#" onClick="renderForm('geonames', '#apiForm'); clearResults('#apiResultsContainer'); $('.formTabs .button').removeClass('highlight'); $('.formTabs .geonames').addClass('highlight'); return false;" class="button geonames highlight">Geographic Names Form</a>
-        						<a href="#" onClick="renderForm('publications', '#apiForm'); clearResults('#apiResultsContainer'); $('.formTabs .button').removeClass('highlight'); $('.formTabs .publications').addClass('highlight'); return false;" class="button publications">Publications Form</a>
-        						<a href="#" onClick="renderForm('occurrences', '#apiForm'); clearResults('#apiResultsContainer'); $('.formTabs .button').removeClass('highlight'); $('.formTabs .occurrences').addClass('highlight'); return false;" class="button occurrences">Occurrences Form</a>
-        					</div>-->
-        					<div id="apiFormContainer">
-        						<form id="apiForm">
-        							<H2 id='apiFormLabel'></H2>
-        							<p id='apiFormDescription'></p>
-        							<div id="apiFormElements">
-
-        							</div>
-        						</form>
-        						<button class="button" onClick="processForm($('#apiForm').serializeArray(), '#apiResultsContainer', 100, 0); return false;">Search</button>
-        					</div>
+				<div class="col-12">
+            		<h1>Sandbox</h1>
+					<div id="apiFormContainer">
+                        <div class="row">
+                            <div class="col-3">
+                                <H2 id='apiFormLabel'></H2>
+                            </div>
+                            <div class="col-8">
+                                <p id='apiFormDescription'></p>
+                            </div>
+                            <div class="col-1">
+                                <h3><button type="button" id="searchCollapse" onClick="toggleForm('#apiForm');">[ &mdash; ]</button></h3>
+                            </div>
                         </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-12">
-        					<div class="row">
-        						<div class="col-12 text-center">
-        							<br/><h3><strong>File a Bug Report</strong></h3>
-        						</div>
-        					</div>
-        					<div class="row">
-        						<div class="col-6 text-center">
-        							<h3><strong><a href="https://github.com/ePandda/ePandda-API/issues" target="_blank"><i class="fa fa-github"></i> Github</a></strong></h3>
-        						</div>
-        						<div class="col-6 text-center">
-        							<h3><strong><a id="bugFormToggle" href=""><i class="fa fa-envelope-o"></i> Email</a></strong></h3>
-        						</div>
-        					</div>
-        					<br/>
-        					<form id="bugReport">
-        						<div class="row bugForm">
-        							<div class="col-2-m">
-        								<label><strong>Your Email</strong></label>
-        							</div>
-        							<div class="col-10-m">
-        								<input type="text" id="email" name="email" class="field">
-        								<div id="emailErrorMsg" class="errorMsg"></div>
-        							</div>
-        						</div>
-        						<div class="row bugForm">
-        							<div class="col-2-m">
-        								<label><strong>Subject</strong></label>
-        							</div>
-        							<div class="col-10-m">
-        								<input type="text" id="subject" name="subject" class="field">
-        								<div id="subjectErrorMsg" class="errorMsg"></div>
-        							</div>
-        						</div>
-        						<div class="row bugForm">
-        							<div class="col-2-m">
-        								<label><strong>Message</strong></label>
-        							</div>
-        							<div class="col-10-m">
-        								<textarea id="message" name="message" class="field" cols="20" rows="5"></textarea>
-        								<div id="messageErrorMsg" class="errorMsg"></div>
-        							</div>
-        						</div>
-        						<div class="row">
-        							<div class="col-12-m"></div>
-        						</div>
-        						<div class="row bugForm">
-        							<div class="col-12-m text-right">
-        								<button id="bugReportButton" class="button imageSearchButton" onclick="sendBugReport(); return false;">Send</button>
-        								<div id="bugReportSent"></div>
-        							</div>
-        						</div>
-        					</form>
-        				</div>
-        			</div>
-                </div>
-                <div class="col-12 col-6-m">
-                	<div class="row">
-                		<div class="col-12">
-							<div id="apiResultsContainer">
-								<H2 id="apiResultsLabel"></H2>
-								<div id="apiResultsCounts"></div>
-								<div id="apiResultsURL"></div>
-								<div id="apiResultsButtons" class="row"></div>
-								<div id="apiUIResultsContainer"></div>
-								<div id="apiResultsJSON"></div>
-								<div id="apiLoadAdditionalResult"></div>
+						<form id="apiForm">
+							<div id="apiFormElements">
+
 							</div>
+                            <button id="searchButton" class="button" onClick="processForm($('#apiForm').serializeArray(), '#apiResultsContainer', 100, 0); toggleForm('#apiForm'); return false;">Search</button>
+						</form>
+
+					</div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <div id="apiResultsContainer">
+                        <H2 id="apiResultsLabel"></H2>
+                        <div id="apiResultsCounts"></div>
+                        <div id="apiResultsURL"></div>
+                        <div id="apiResultsButtons" class="row"></div>
+                        <div id="apiUIResultsContainer"></div>
+                        <div id="apiResultsJSON"></div>
+                        <div id="apiLoadAdditionalResult"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <div id="apiMoreContainer">
+                        <H2 id="apiMoreLabel"></H2>
+                        <div id="apiMoreCounts"></div>
+                        <div id="apiMoreURL"></div>
+                        <div id="apiMoreButtons" class="row"></div>
+                        <div id="apiUIMoreContainer"></div>
+                        <div id="apiMoreJSON"></div>
+                        <div id="apiLoadAdditionalMore"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-8 push-2">
+					<div class="row">
+						<div class="col-12 text-center">
+							<br/><h3><strong>File a Bug Report</strong></h3>
 						</div>
 					</div>
+					<div class="row">
+						<div class="col-6 text-center">
+							<h3><strong><a href="https://github.com/ePandda/ePandda-API/issues" target="_blank"><i class="fa fa-github"></i> Github</a></strong></h3>
+						</div>
+						<div class="col-6 text-center">
+							<h3><strong><a id="bugFormToggle" href=""><i class="fa fa-envelope-o"></i> Email</a></strong></h3>
+						</div>
+					</div>
+					<br/>
+					<form id="bugReport">
+						<div class="row bugForm">
+							<div class="col-2-m">
+								<label><strong>Your Email</strong></label>
+							</div>
+							<div class="col-10-m">
+								<input type="text" id="email" name="email" class="field">
+								<div id="emailErrorMsg" class="errorMsg"></div>
+							</div>
+						</div>
+						<div class="row bugForm">
+							<div class="col-2-m">
+								<label><strong>Subject</strong></label>
+							</div>
+							<div class="col-10-m">
+								<input type="text" id="subject" name="subject" class="field">
+								<div id="subjectErrorMsg" class="errorMsg"></div>
+							</div>
+						</div>
+						<div class="row bugForm">
+							<div class="col-2-m">
+								<label><strong>Message</strong></label>
+							</div>
+							<div class="col-10-m">
+								<textarea id="message" name="message" class="field" cols="20" rows="5"></textarea>
+								<div id="messageErrorMsg" class="errorMsg"></div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-12-m"></div>
+						</div>
+						<div class="row bugForm">
+							<div class="col-12-m text-right">
+								<button id="bugReportButton" class="button imageSearchButton" onclick="sendBugReport(); return false;">Send</button>
+								<div id="bugReportSent"></div>
+							</div>
+						</div>
+					</form>
 				</div>
 			</div>
 			<br/>

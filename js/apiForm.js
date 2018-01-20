@@ -1,12 +1,12 @@
 function renderFormDropdown(container, formContainer){
 	$.ajax({
-		url: 'https://api.epandda.org/',
+		url: 'http://localhost:5000/es_occurrences',
 		method: "GET",
 		dataType: "json",
 		crossDomain: "true",
 		formContainer: formContainer,
 		success: function(data){
-			var select = 'Choose a form to query the API: <select name="endpoint" id="endpoint" onChange="renderForm($(\'#endpoint\').val(), \'' + this.formContainer + '\');">';
+			//var select = 'Choose a form to query the API: <select name="endpoint" id="endpoint" onChange="renderForm($(\'#endpoint\').val(), \'' + this.formContainer + '\');">';
 			for (var i = 0; i < data.routes.length; i++) {
 				var optionInfo = data.routes[i];
 				var endpoint = optionInfo.url.replace("/", "");
@@ -27,16 +27,17 @@ function renderFormDropdown(container, formContainer){
 }
 function renderForm(endpoint, container){
 	$.ajax({
-		url: 'https://api.epandda.org/' + endpoint,
+		url: 'http://localhost:5000/' + endpoint,
 		method: "GET",
 		dataType: "json",
 		crossDomain: "true",
 		success: function(data){
-			$(container + ' #apiFormLabel').text('Search the ' + data.name);
+			$(container + ' #apiFormLabel').text(data.name);
 			$(container + ' #apiFormDescription').text(data.description);
 			$(container + ' #apiFormElements').text("");
 			for (var i = 0; i < data.params.length; i++) {
 				var elementInfo = data.params[i];
+				if(elementInfo.display == false){ continue; }
 				var formElement = "<div class='form-group'><label><b>" + elementInfo.label + "</b><br/><small>" + elementInfo.description + "</small></label>\n";
 				switch(elementInfo.type) {
 					case "text":
@@ -60,6 +61,16 @@ function renderForm(endpoint, container){
 		}
 	});
 }
+
+function toggleForm(formID){
+	$(formID).toggle();
+	if($(formID).is(":visible")){
+		$('#searchCollapse').html('[ &mdash; ]');
+	} else {
+		$('#searchCollapse').html('[ + ]');
+	}
+}
+
 function processForm(formData, resultContainer, limit, offset){
 	var apiParams = "";
 	for (var i = 0; i < formData.length; i++){
@@ -82,23 +93,19 @@ function processForm(formData, resultContainer, limit, offset){
 			}
 		}
 
-        //$(resultContainer + ' #apiResultsCounts').html("");
-        //$(resultContainer + ' #apiResultsURL').html("");
         clearResults(resultContainer);
         $(resultContainer + ' #apiUIResultsContainer').html("<h1> <i class='fa fa-cog fa-spin fa-2x fa-fw'></i> Loading...</h1>");
-		var realLimit = limit+offset;
-		console.log(realLimit, offset);
 		$.ajax({
-			
-			url: 'https://api.epandda.org/' + endpoint + "?" + apiParams + '&limit=' + realLimit + '&offset=' + offset,
+
+			url: 'http://localhost:5000/' + endpoint + "?" + apiParams,
 			method: "GET",
 			dataType: "json",
 			crossDomain: "true",
 			success: function(data){
-				console.log(data);
 				$(resultContainer + ' #apiResultsLabel').html('Search Results');
-				$(resultContainer + ' #apiResultsCounts').html("Total Results: " + data.counts.totalCount + "<br/>iDigBio Results: " + data.counts.idbCount + "<br/>PaleoBiology Database Results: " + data.counts.pbdbCount);
-				$(resultContainer + ' #apiResultsURL').html("<b>URL:</b><br/><pre>https://api.epandda.org/" + endpoint + "?" + decodeURIComponent(apiParams) + "</pre>");
+				var totalResults = data.queryInfo.idigbioTotal + data.queryInfo.pbdbTotal
+				$(resultContainer + ' #apiResultsCounts').html("Total Results: " + totalResults + "<br/>iDigBio Results: " + data.queryInfo.idigbioTotal + "<br/>PaleoBiology Database Results: " + data.queryInfo.pbdbTotal);
+				$(resultContainer + ' #apiResultsURL').html("<b>URL:</b><br/><pre>https://localhost:5000/" + endpoint + "?" + decodeURIComponent(apiParams) + "</pre>");
 				$(resultContainer + ' #apiResultsJSONLabel').html('Full JSON Results');
 				$(resultContainer + ' #apiResultsButtons').html('<div class="col-3 no-padding firstResultButton"><button class="resultDisplay" onClick="$(\'#apiUIResultsContainer\').show(); $(\'#apiResultsJSON\').hide();"><h4>List</h4></button></div><div class="col-3 no-padding"><button class="resultDisplay" onClick="$(\'#apiUIResultsContainer\').hide(); $(\'#apiResultsJSON\').show();"><h4>JSON</h4></button></div>');
 				$(resultContainer + ' #apiResultsJSON').html("<pre style='margin-top:0'>" + JSON.stringify(data.results, null, 2) + "</pre>");
@@ -153,86 +160,120 @@ function clearResults(resultContainer){
 }
 
 function returnUIResults(data){
-	listResults = []
-	data.results['idigbio_resolved'].forEach(function(specimen){
-		console.log(specimen);
-		listResults.push({"hasImage": specimen["idigbio:hasImage"], "coordinates": specimen["idigbio:geoPoint"], "institutionCode": specimen["dwc:institutionCode"], "collectionCode": specimen["dwc:collectionCode"], "catalogNumber": specimen["dwc:catalogNumber"], "family": specimen["dwc:family"], "order": specimen["dwc:order"], "scientificName": specimen["dwc:scientificName"], "genus": specimen["dwc:genus"], "species": specimen["dwc:specificEpithet"], "source": "IDB", "ref": specimen["idigbio:uuid"], "id": specimen["dwc:occurrenceID"]});
-	});
-	
-	data.results['pbdb_resolved'].forEach(function(specimen){
-		listResults.push({"hasImage": null, "coordinates": [specimen["lat"], specimen["lng"]], "institutionCode": specimen["comments"], "collectionCode": null, "catalogNumber": specimen["comments"], "family": null, "order": null, "scientificName": null, "genus": specimen["genus_name"], "species": specimen["species_name"], "source": "PBDB", "ref": specimen["collection_no"], "id": specimen["occurrence_no"]});
-	});
-	listResults.forEach(function(spec){
-		els = [];
-		for(var el in spec){
-			els.push([el, spec[el]]);
+	matches = []
+	listHTML = '<div id="apiUIResultsList">';
+	var matchCount = 1;
+	for(var key in data.results){
+		var match = data.results[key]
+		listHTML += '<div class="row"><div class="col-12">';
+		listHTML += '<h3 class="matchHeader">Match ' + matchCount + "</h3><h5>Match Criteria</h5>";
+		for(var key in match.fields){
+			var criteria = match.fields[key]
+			listHTML += "<strong>" + key.charAt(0).toUpperCase() + key.slice(1) + "</strong>: " + criteria + "<br/>";
 		}
-		els.forEach(function(el){
-			if(typeof(el[1]) == 'string' && el[1] != '' && el[0] != "ref" && el[0] != 'species'){
-				spec[el[0]] = el[1][0].toUpperCase() + el[1].slice(1);
-			}
-		});
-
-	});
-	listResults.sort(function(a,b) { return (a.displayName > b.displayName) ? 1 : ((b.displayName > a.displayName) ? -1 : 0);} ); 
-	listHTML = '<div id="apiUIResultsList"><div id="resultUIHeader" class="row"><div class="resultUIIconColumn">Icons</div><div class="col-4"><div class="resultUINumberColumn"></div>Scientific Name</div><div class="col-3">Occurrence ID</div><div class="col-1">Source</div><div class="col-2">Link</div></div>';
-	for(var i = 0; i < listResults.length; i++){
-		specimen = listResults[i];
-		spec_no = i+1;
-		listHTML += '<div class="row"><div class="resultUIIconColumn">';
-		if(specimen['hasImage'] != null){
-			listHTML += '<i class="fa fa-camera"></i> ';
-		} 
-		if(specimen['coordinates'] != null){
-			listHTML += '<i class="fa fa-globe"></i>';
-		}
-		listHTML += '</div>';
-		var displayName = '';
-		var display_hierarchy = ['scentificName', 'genus', 'species', 'family', 'order'];
-		var species_regex = /(?:sp|cf|aff|spp|ssp|indet)(?:\.|$)/
-		for(var j = 0; j < display_hierarchy.length; j++){
-			console.log(specimen[display_hierarchy[j]]);
-			if(specimen[display_hierarchy[j]] != null){
-				if(display_hierarchy[j] == 'scientificName'){
-					displayName += '<em>' + specimen[display_hierarchy[j]] + '</em>';
-					break;
-				} else if(display_hierarchy[j] == 'genus'){
-					displayName += '<em>' + specimen[display_hierarchy[j]] + '</em>';
-					if(specimen['species'] != null){
-						if(species_regex.test(specimen['species']) == true){
-							displayName += '&nbsp;' + specimen['species'];
-						} else {
-							displayName += '&nbsp;<em>' + specimen['species'] + '</em> ';
-						}
-					}
-					break;
+		listHTML += '</div></div><div class="row"><div class="col-6"><h5>' + match.sourceType + ' Sources</h5>';
+		if(match.sources.length > 0){
+			match.sources.forEach(function(src){
+				listHTML += '<div class="row">';
+				if(match.sourceType == 'idigbio'){
+					listHTML += '<div class="col-6">' + src['dwc:scientificName'] + "</div>";
+					listHTML += '<div class="col-6"><a href="' + src['url'] + '" target="_blank">' + src['idigbio:uuid'] + "</a></div>";
 				} else {
-					displayName = specimen[display_hierarchy[j]];
-					break;
+					listHTML += '<div class="col-6">' + src['accepted_name'] + "</div>";
+					listHTML += '<div class="col-6"><a href="' + src['url'] + '" target="_blank">' + src['occurrence_no'] + "</a></div>";
 				}
-			}
+				listHTML += '</div>';
+
+			});
+			listHTML += '<div class="row"><div class="col-12"><button class="searchMore" onClick=\'expandSearch("sourceQuery", ' + JSON.stringify(match.fullSourceQuery) + ', "#apiMoreContainer", "' + match.matchType + '"); return false;\'>See All Source Records</button></div></div>';
 		}
-		listHTML += '<div class="col-4"><div class="resultUINumberColumn">' + spec_no + '.</div>' + displayName + '</em></div>';
-		
-		
-		listHTML += '<div class="col-3"><div class="occurrenceIDColumn">' + specimen['id'];
-		if(specimen["source"] == 'PBDB'){
-			listHTML += ' <small><a href="https://paleobiodb.org/data1.2/occs/single.json?id=' + specimen["id"] + '&show=full" target="_blank">JSON</a></small>';
-		}
-		listHTML += '</div></div>';
-		listHTML += '<div class="col-1">' + specimen['source'] + '</div>';
-		
-		listHTML += '<div class="col-2">';
-		if(specimen["source"] == 'IDB'){
-			listHTML += '<a href="https://www.idigbio.org/portal/records/' + specimen["ref"] + '" target="_blank">DETAIL <i class="fa fa-arrow-right"></i></a>';
+		listHTML += '</div><div class="col-6"><h5>'+ match.matchType + ' Matches</h5>';
+		if(match.sources.length > 0){
+			match.matches.forEach(function(mtc){
+				listHTML += '<div class="row">';
+				if(match.matchType == 'idigbio'){
+					listHTML += '<div class="col-6">' + mtc['dwc:scientificName'] + "</div>";
+					listHTML += '<div class="col-6"><a href="' + mtc['url'] + '" target="_blank">' + mtc['idigbio:uuid'] + "</a></div>";
+				} else {
+					listHTML += '<div class="col-6">' + mtc['accepted_name'] + "</div>";
+					listHTML += '<div class="col-6"><a href="' + mtc['url'] + '" target="_blank">' + mtc['occurrence_no'] + "</a></div>";
+				}
+				listHTML += '</div>';
+			});
+			listHTML += '<div class="row"><div class="col-12"><button class="searchMore" onClick=\'expandSearch("matchQuery", ' + JSON.stringify(match.fullMatchQuery)+ ', "#apiMoreContainer", "' + match.matchType + '"); return false;\'>See All Matching Records</button></div></div>';
 		} else {
-			//pbdb_coll_link = 'https://paleobiodb.org/classic?a=basicCollectionSearch&collection_no=' + specimen["ref"] + '&show=full';
-			listHTML += '<a href="https://paleobiodb.org/classic?a=basicCollectionSearch&collection_no=' + specimen["ref"] + '&show=full" target="_blank">DETAIL <i class="fa fa-arrow-right"></i></a>';
-				
-			
+			listHTML += '<h6>No Matches Found</h6>';
 		}
 		listHTML += '</div></div>';
+		matchCount += 1;
 	}
-	listHTML == '</div>';
+	listHTML += '</div>';
+	return listHTML;
+}
+
+function expandSearch(type, query, moreContainer, recordType){
+	$(moreContainer + ' #apiUIMoreContainer').html("<h1> <i class='fa fa-cog fa-spin fa-2x fa-fw'></i> Loading...</h1>");
+	var currentY = $(window).scrollTop();
+	$(window).scrollTop(currentY+500);
+
+	$.ajax({
+
+		url: 'http://localhost:5000/full_match_results?' + type + '=' + query,
+		method: "GET",
+		dataType: "json",
+		crossDomain: "true",
+		success: function(data){
+			$(moreContainer + ' #apiMoreLabel').html('Expanded Search Results');
+			$(moreContainer + ' #apiMoreCounts').html("Total Results: " + data.total);
+			$(moreContainer + ' #apiResultsURL').html("<b>URL:</b><br/><pre>http://localhost:5000/full_match_results?" + type + '=' + query + "</pre>");
+			$(moreContainer + ' #apiMoreJSONLabel').html('Full JSON Results');
+			$(moreContainer + ' #apiMoreButtons').html('<div class="col-3 no-padding firstResultButton"><button class="resultDisplay" onClick="$(\'#apiUIMoreContainer\').show(); $(\'#apiMoreJSON\').hide();"><h4>List</h4></button></div><div class="col-3 no-padding"><button class="resultDisplay" onClick="$(\'#apiUIMoreContainer\').hide(); $(\'#apiMoreJSON\').show();"><h4>JSON</h4></button></div>');
+			$(moreContainer + ' #apiMoreJSON').html("<pre style='margin-top:0'>" + JSON.stringify(data.results, null, 2) + "</pre>");
+			listHTML = returnMoreResults(data, recordType);
+			$('#apiUIMoreContainer').html(listHTML);
+			$('#apiUIMoreContainer').css("border", "1px solid #d7d7d7");
+		},
+		error: function (jqXHR, exception) {
+			var msg = '';
+			if (jqXHR.status === 0) {
+				msg = 'Not connect.\n Verify Network.';
+			} else if (jqXHR.status == 404) {
+				msg = 'Requested page not found. [404]';
+			} else if (jqXHR.status == 500) {
+				msg = 'Internal Server Error [500].';
+			} else if (exception === 'parsererror') {
+				msg = 'Requested JSON parse failed.';
+			} else if (exception === 'timeout') {
+				msg = 'Time out error.';
+			} else if (exception === 'abort') {
+				msg = 'Ajax request aborted.';
+			} else {
+				msg = 'Uncaught Error.\n' + jqXHR.responseText;
+			}
+			$(moreContainer + ' #apiMoreCounts').html("");
+			$(moreContainer + ' #apiMoreURL').html("");
+			$(moreContainer + ' #apiMoreJSON').html("");
+			$(moreContainer + ' #apiMoreLabel').html('There were errors: ' + msg);
+		}
+	});
+}
+
+function returnMoreResults(data, recordType){
+	matches = []
+	listHTML = '<div id="apiUIMoreList">';
+	var matchCount = 1;
+	console.log(data.total);
+	data.results.forEach(function(res){
+		listHTML += '<div class="row"><div class="col-12">';
+		if(recordType == 'idigbio'){
+				listHTML += '<div class="col-6">' + res['dwc:scientificName'] + "</div>";
+				listHTML += '<div class="col-6"><a href="' + res['url'] + '" target="_blank">' + res['idigbio:uuid'] + "</a></div>";
+		} else {
+			listHTML += '<div class="col-6">' + res['accepted_name'] + "</div>";
+			listHTML += '<div class="col-6"><a href="' + res['url'] + '" target="_blank">' + res['occurrence_no'] + "</a></div>";
+		}
+		listHTML += '</div></div>';
+	});
+	listHTML += '</div>';
 	return listHTML;
 }

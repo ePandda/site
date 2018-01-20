@@ -31,6 +31,10 @@ a {
 	text-decoration: none;
 }
 
+section p{
+	margin: 0 0 10px 0;
+}
+
 /* ==================================================== */
 /* HEADER                                               */
 /* ==================================================== */
@@ -108,21 +112,31 @@ a {
 }
 #apiFormContainer{
 	border:2px solid #dedede;
-	padding:30px;
+	padding:15px;
 }
 #apiFormContainer #apiFormElements{
 	max-height:435px;
 	overflow-y:scroll;
 	margin-bottom:25px;
 }
+
+#searchCollapse{
+	border: none;
+	background: none;
+	float: right;
+}
+
 #apiFormContainer .form-group{
-	margin-bottom:15px;
+	margin-bottom:10px;
+	width: 45%;
+	padding-right: 3%;
+	float: left;
 }
 #apiFormContainer .form-group input{
 	width:100%;
 }
 #apiResultsContainer{
-	margin-top:100px;
+	margin-top:25px;
 }
 #apiResultsURL{
 	padding-top:10px;
@@ -132,28 +146,39 @@ a {
 	font-weight:bold;
 }
 
+#apiFormDescription{
+	margin: 5px 0 0 0;
+}
+
 .form-element {
     height: 35px;
 }
 
-#apiResultsJSON{
+#searchButton{
+	width: 100%;
+	font-size: 20px;
+	background-color: #8bc53f;
+	color: #fff;
+}
+
+#apiResultsJSON, #apiMoreJSON{
 	display: none;
 }
 
-#apiUIResultsContainer{
+#apiUIResultsContainer, #apiUIMoreContainer{
 	margin-bottom: 15px;
 	display: visible;
 	max-height: 500px;
 	overflow: scroll;
 }
 
-#apiUIResultsList{
+#apiUIResultsList, #apiUIMoreList{
 	background-color: #ededed;
-	
+
 	padding: 5px 15px;
 }
 
-#resultUIHeader{
+#resultUIHeader, #moreUIHeader{
 	font-weight: bold;
 }
 
@@ -201,6 +226,11 @@ a {
 	width: 100%;
 	text-align: center;
 	padding-top: 7px;
+}
+
+.matchHeader{
+	border-top: 2px solid #dedede;
+	margin-top: 15px;
 }
 
 /* ==================================================== */
@@ -259,7 +289,7 @@ a {
   #pac-input:focus, #radius-input:focus {
 	border-color: #4d90fe;
   }
-  
+
   #radius-input{
    	background-color: #fff;
     font-family: Roboto;
