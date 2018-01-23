@@ -188,21 +188,25 @@ function returnUIResults(data){
 			listHTML += '<div class="row"><div class="col-12"><button class="searchMore" onClick=\'expandSearch("sourceQuery", ' + JSON.stringify(match.fullSourceQuery) + ', "#apiMoreContainer", "' + match.matchType + '"); return false;\'>See All Source Records</button></div></div>';
 		}
 		listHTML += '</div><div class="col-6"><h5>'+ match.matchType + ' Matches</h5>';
-		if(match.sources.length > 0){
-			match.matches.forEach(function(mtc){
-				listHTML += '<div class="row">';
-				if(match.matchType == 'idigbio'){
-					listHTML += '<div class="col-6">' + mtc['dwc:scientificName'] + "</div>";
-					listHTML += '<div class="col-6"><a href="' + mtc['url'] + '" target="_blank">' + mtc['idigbio:uuid'] + "</a></div>";
-				} else {
-					listHTML += '<div class="col-6">' + mtc['accepted_name'] + "</div>";
-					listHTML += '<div class="col-6"><a href="' + mtc['url'] + '" target="_blank">' + mtc['occurrence_no'] + "</a></div>";
-				}
-				listHTML += '</div>';
-			});
-			listHTML += '<div class="row"><div class="col-12"><button class="searchMore" onClick=\'expandSearch("matchQuery", ' + JSON.stringify(match.fullMatchQuery)+ ', "#apiMoreContainer", "' + match.matchType + '"); return false;\'>See All Matching Records</button></div></div>';
+		if(match.matches != null){
+			if(match.matches.length > 0){
+				match.matches.forEach(function(mtc){
+					listHTML += '<div class="row">';
+					if(match.matchType == 'idigbio'){
+						listHTML += '<div class="col-6">' + mtc['dwc:scientificName'] + "</div>";
+						listHTML += '<div class="col-6"><a href="' + mtc['url'] + '" target="_blank">' + mtc['idigbio:uuid'] + "</a></div>";
+					} else {
+						listHTML += '<div class="col-6">' + mtc['accepted_name'] + "</div>";
+						listHTML += '<div class="col-6"><a href="' + mtc['url'] + '" target="_blank">' + mtc['occurrence_no'] + "</a></div>";
+					}
+					listHTML += '</div>';
+				});
+				listHTML += '<div class="row"><div class="col-12"><button class="searchMore" onClick=\'expandSearch("matchQuery", ' + JSON.stringify(match.fullMatchQuery)+ ', "#apiMoreContainer", "' + match.matchType + '"); return false;\'>See All Matching Records</button></div></div>';
+			} else {
+				listHTML += '<h6>No Matches Found</h6>';
+			}
 		} else {
-			listHTML += '<h6>No Matches Found</h6>';
+			listHTML += '<h6>Not enough criteria found in these source records to create accurate matches</h6>';
 		}
 		listHTML += '</div></div>';
 		matchCount += 1;
