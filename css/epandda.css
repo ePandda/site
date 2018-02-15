@@ -129,9 +129,18 @@ section p{
 #apiFormContainer .form-group{
 	margin-bottom:10px;
 	width: 45%;
-	padding-right: 3%;
+	margin-right: 3%;
 	float: left;
+	position: relative;
+	min-height: 110px;
 }
+
+#apiFormContainer .form-group .form-bottom{
+	position: absolute;
+	bottom: 0;
+	width: 100%
+}
+
 #apiFormContainer .form-group input{
 	width:100%;
 }

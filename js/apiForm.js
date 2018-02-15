@@ -51,7 +51,7 @@ function renderForm(endpoint, container){
 			for (var i = 0; i < data.params.length; i++) {
 				var elementInfo = data.params[i];
 				if(elementInfo.display == false){ continue; }
-				var formElement = "<div class='form-group'><label><b>" + elementInfo.label + "</b><br/><small>" + elementInfo.description + "</small></label>\n";
+				var formElement = "<div class='form-group'><div class='form-bottom'><label><b>" + elementInfo.label + "</b><br/><small>" + elementInfo.description + "</small></label>\n";
 				switch(elementInfo.type) {
 					case "text":
 						formElement += "<div><input type='text' name='" + elementInfo.name + "' class='form-element'></div>";
@@ -65,7 +65,7 @@ function renderForm(endpoint, container){
 					default:
 						break;
 				}
-				formElement += "</div>";
+				formElement += "</div></div>";
 				$(container + ' #apiFormElements').append(formElement);
 
 			}
@@ -115,6 +115,7 @@ function processForm(formData, resultContainer, limit, offset){
 			dataType: "json",
 			crossDomain: "true",
 			success: function(data){
+				console.log(data);
 				$(resultContainer + ' #apiResultsLabel').html('Search Results');
 				var totalResults = data.queryInfo.idigbioTotal + data.queryInfo.pbdbTotal
 				$(resultContainer + ' #apiResultsCounts').html("Total Results: " + totalResults + "<br/>iDigBio Results: " + data.queryInfo.idigbioTotal + "<br/>PaleoBiology Database Results: " + data.queryInfo.pbdbTotal);

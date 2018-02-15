@@ -165,88 +165,85 @@ $(document).ready(function(){
 
     function plotSpecimen(map, infoWindow, pos, geoRadius){
 		var geoRadiusMeters = geoRadius * 1000;
-		$.getJSON( api_url + 'geonames?geoPoint=' + pos.lat + ', ' + pos.lng + '&geoRadius=' + geoRadiusMeters +'&limit=500', function( data ) {
-			specimens_results = data;
+		$.getJSON( api_url + 'es_occurrences?terms=geoPoint:' + pos.lat + ', ' + pos.lng + '&geoRadius=' + geoRadiusMeters +'&limit=500', function( data ) {
+			var specimen_results = data;
 			// add all the specimen points to the map
-			var specimens;
-			if(specimens_results.results.idigbio_resolved.length){
-				placeSpecimenMarkers(specimens_results.results.idigbio_resolved, infoWindow);
-			}
-			if(specimens_results.results.pbdb_resolved.length){
-				placeSpecimenMarkers(specimens_results.results.pbdb_resolved, infoWindow);
+			for(var resKey in specimen_results.results){
+				if(specimen_results.results[resKey]['matches'] !== null){
+					placeSpecimenMarkers(specimen_results.results[resKey]['matches'], 	specimen_results.results[resKey]['matchType'], infoWindow);
+				}
+				placeSpecimenMarkers(specimen_results.results[resKey]['sources'], specimen_results.results[resKey]['sourceType'], infoWindow);
 			}
 			infoWindow.setPosition(pos);
-			infoWindow.setContent(specimens_results.counts.totalCount + ' specimens found in this area');
+			infoWindow.setContent(specimen_results.queryInfo.idigbioTotal + ' iDigBio specimens and ' + specimen_results.queryInfo.pbdbTotal + ' PBDB specimens found in this area');
 			infoWindow.open(map);
 			markers.push(infoWindow);
 			map.setCenter(pos);
 
 		});
 	}
-    function placeSpecimenMarkers(specimenResults, infowindow) {
+    function placeSpecimenMarkers(specimenResults, specimenType, infowindow) {
       var marker, i;
       var markerData = {};
-      for (var i = 0; i < specimenResults.length; i++) {
+	  for (var i = 0; i < specimenResults.length; i++) {
 			var specimen = specimenResults[i];
-			if ("idigbio:geoPoint" in specimen){
-				var latlng = String(specimen["idigbio:geoPoint"]);
-				var lat = latlng.substring(7, latlng.indexOf(","));
-				var lng = latlng.substring(latlng.indexOf(",") + 9, latlng.length -1);
-			} else if ("lat" in specimen && "lng" in specimen ) {
-				var lat = specimen['lat'];
-				var lng = specimen['lng'];
-			}
-			var specimenLatLng = new google.maps.LatLng(lat,lng);
 			var scientificName = "";
-			if ("dwc:specificEpithet" in specimen && specimen["dwc:specificEpithet"]) {
-				scientificName = specimen['dwc:genus'];
-				if("dwc:specificEpithet" in specimen){
-					scientificName = scientificName + ' ' + specimen['dwc:specificEpithet'];
-				}
-			} else if ("genus_name" in specimen && specimen["genus_name"]) {
-				scientificName = specimen['genus_name'];
-				if("species_name" in specimen){
-					scientificName = scientificName + ' ' + specimen['species_name'];
-				}
-			} else if ("dwc:scientificName" in specimen && specimen["dwc:scientificName"]){
-				scientificName = specimen['dwc:scientificName'];
-			}
-			scientificName = scientificName.toLowerCase();
 			var spec_type = "";
-			if ("dwc:basisOfRecord" in specimen) {
+			if(specimenType == 'idigbio'){
+				var latlng = String(specimen["idigbio:geoPoint"]).split(',');
+
+				var lat = latlng[0];
+				var lng = latlng[1];
+				if(specimen['dwc:scientificName']){
+					scientificName = specimen['dwc:scientificName'];
+				} else {
+					if(specimen['dwc:genus']){
+						scientificName = specimen['dwc:genus'];
+						if(specimen["dwc:specificEpithet"]){
+							scientificName = scientificName + ' ' + specimen['dwc:specificEpithet'];
+						}
+					}
+				}
 				if(specimen['dwc:basisOfRecord'] == "preservedspecimen"){
 					spec_type = "(extant)";
 				}else{
 					spec_type = "(fossil)";
 				}
-			}else{
-				spec_type = "(fossil)";
+				var hierTaxonomy = [];
+				var hierTaxonomyDisplay = "";
+				if (specimen["dwc:kingdom"]) {
+					hierTaxonomy.push(specimen["dwc:kingdom"]);
+				}
+				if (specimen["dwc:phylum"]) {
+					hierTaxonomy.push(specimen["dwc:phylum"]);
+				}
+				if (specimen["dwc:class"]) {
+					hierTaxonomy.push(specimen["dwc:class"]);
+				}
+				if (specimen["dwc:order"]) {
+					hierTaxonomy.push(specimen["dwc:order"]);
+				}
+				if (specimen["dwc:order"]) {
+					hierTaxonomy.push(specimen["dwc:order"]);
+				}
+				if(hierTaxonomy.length){
+					hierTaxonomyDisplay = "<div style='text-transform:capitalize;'>" + hierTaxonomy.join(" > ") + "</div>";
+				}
+			} else {
+				var lat = specimen['lat'];
+				var lng = specimen['lng'];
+				if(specimen['accepted_name']){
+					scientificName = specimen['accepted_name']
+				}
+				spec_type = "(fossil)"
 			}
-			var hierTaxonomy = [];
-			var hierTaxonomyDisplay = "";
-			if ("dwc:kingdom" in specimen && specimen["dwc:kingdom"]) {
-				hierTaxonomy.push(specimen["dwc:kingdom"]);
-			}
-			if ("dwc:phylum" in specimen && specimen["dwc:phylum"]) {
-				hierTaxonomy.push(specimen["dwc:phylum"]);
-			}
-			if ("dwc:class" in specimen && specimen["dwc:class"]) {
-				hierTaxonomy.push(specimen["dwc:class"]);
-			}
-			if ("dwc:order" in specimen && specimen["dwc:order"]) {
-				hierTaxonomy.push(specimen["dwc:order"]);
-			}
-			if ("dwc:family" in specimen && specimen["dwc:order"]) {
-				hierTaxonomy.push(specimen["dwc:order"]);
-			}
-			if(hierTaxonomy.length){
-				hierTaxonomyDisplay = "<div style='text-transform:capitalize;'>" + hierTaxonomy.join(" > ") + "</div>";
-			}
+			var specimenLatLng = new google.maps.LatLng(lat,lng);
+		 	scientificName = scientificName.toLowerCase();
 			scientificName = scientificName.charAt(0).toUpperCase() + scientificName.slice(1);
 			if(!markerData[specimenLatLng]){
 				markerData[specimenLatLng] = {"coors" : specimenLatLng, "display" : []};
 			}
-			markerData[specimenLatLng]["display"].push("<div style='font-size:18px;'><b><i>" + scientificName + "</i></b> " + spec_type + "</div>" + hierTaxonomyDisplay + "<br/><a href='" + specimen["url"] + "'>" + specimen["url"] + "</a>");
+			markerData[specimenLatLng]["display"].push("<div style='font-size:18px;'><b><i>" + scientificName + "</i></b> " + spec_type + "</div>" + hierTaxonomyDisplay + "<br/><a href='" + specimen["url"] + "' target='_blank'>" + specimen["url"] + "</a>");
 			if(i == 500){
 				break;
 			}
@@ -256,7 +253,7 @@ $(document).ready(function(){
 			marker = new google.maps.Marker({
 				position: markerData[markerLatLng]["coors"],
 				map: map,
-				title: c
+				title: c.toString()
 			});
 			markers.push(marker);
 			var markerDisplay = markerData[markerLatLng]["display"].join("<br/><br/>");
