@@ -183,6 +183,14 @@ function returnUIResults(data){
 		listHTML += '<h3 class="matchHeader">Match ' + matchCount + "</h3><h5>Match Criteria</h5>";
 		for(var key in match.fields){
 			var criteria = match.fields[key]
+			if(typeof(criteria) == 'object' && match.sourceType == 'idigbio'){
+				console.log(typeof(criteria));
+				var subCriteria = '';
+				for(var subKey in criteria){
+					subCriteria += subKey + ": " + criteria[subKey] + ' ';
+				}
+				criteria = subCriteria;
+			}
 			listHTML += "<strong>" + key.charAt(0).toUpperCase() + key.slice(1) + "</strong>: " + criteria + "<br/>";
 		}
 		listHTML += '</div></div><div class="row"><div class="col-6"><h5>' + match.sourceType + ' Sources</h5>';
@@ -243,7 +251,7 @@ function expandSearch(type, query, moreContainer, recordType){
 		success: function(data){
 			$(moreContainer + ' #apiMoreLabel').html('Expanded Search Results');
 			$(moreContainer + ' #apiMoreCounts').html("Total Results: " + data.total);
-			$(moreContainer + ' #apiResultsURL').html("<b>URL:</b><br/><pre>http://localhost:5000/full_match_results?" + type + '=' + query + "</pre>");
+			$(moreContainer + ' #apiResultsURL').html("<b>URL:</b><br/><pre>https://api.epandda.org/full_match_results?" + type + '=' + query + "</pre>");
 			$(moreContainer + ' #apiMoreJSONLabel').html('Full JSON Results');
 			$(moreContainer + ' #apiMoreButtons').html('<div class="col-3 no-padding firstResultButton"><button class="resultDisplay" onClick="$(\'#apiUIMoreContainer\').show(); $(\'#apiMoreJSON\').hide();"><h4>List</h4></button></div><div class="col-3 no-padding"><button class="resultDisplay" onClick="$(\'#apiUIMoreContainer\').hide(); $(\'#apiMoreJSON\').show();"><h4>JSON</h4></button></div>');
 			$(moreContainer + ' #apiMoreJSON').html("<pre style='margin-top:0'>" + JSON.stringify(data.results, null, 2) + "</pre>");
