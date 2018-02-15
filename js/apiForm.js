@@ -1,6 +1,17 @@
+var api_url;
+$.ajax({
+	url: "js/config.json",
+	method: "GET",
+	dataType: "json",
+	async: false,
+	success: function(json){
+		api_url = json.api_url
+	}
+});
+
 function renderFormDropdown(container, formContainer){
 	$.ajax({
-		url: 'https://api.epandda.org/es_occurrences',
+		url: api_url + '/es_occurrences',
 		method: "GET",
 		dataType: "json",
 		crossDomain: "true",
@@ -26,12 +37,14 @@ function renderFormDropdown(container, formContainer){
 	});
 }
 function renderForm(endpoint, container){
+	console.log(endpoint, container, api_url);
 	$.ajax({
-		url: 'https://api.epandda.org/' + endpoint,
+		url: api_url + endpoint,
 		method: "GET",
 		dataType: "json",
 		crossDomain: "true",
 		success: function(data){
+			console.log(data);
 			$(container + ' #apiFormLabel').text(data.name);
 			$(container + ' #apiFormDescription').text(data.description);
 			$(container + ' #apiFormElements').text("");
@@ -97,7 +110,7 @@ function processForm(formData, resultContainer, limit, offset){
         $(resultContainer + ' #apiUIResultsContainer').html("<h1> <i class='fa fa-cog fa-spin fa-2x fa-fw'></i> Loading...</h1>");
 		$.ajax({
 
-			url: 'https://api.epandda.org/' + endpoint + "?" + apiParams,
+			url: api_url + endpoint + "?" + apiParams,
 			method: "GET",
 			dataType: "json",
 			crossDomain: "true",
@@ -230,7 +243,7 @@ function expandSearch(type, query, moreContainer, recordType){
 
 	$.ajax({
 
-		url: 'https://api.epandda.org/full_match_results?' + type + '=' + query,
+		url: api_url + '/full_match_results?' + type + '=' + query,
 		method: "GET",
 		dataType: "json",
 		crossDomain: "true",
