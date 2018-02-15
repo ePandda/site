@@ -22,7 +22,7 @@ $(document).ready(function(){
 	//	$('#content-about').append(data);
 	//});
 	$.ajax({
-		url: 'http://localhost:5000/stats?totalRecords=1',
+		url: 'https://api.epandda.org/stats?totalRecords=1',
 		method: "GET",
 		dataType: "json",
 		crossDomain: "true",
@@ -155,7 +155,7 @@ $(document).ready(function(){
 
     function plotSpecimen(map, infoWindow, pos, geoRadius){
 		var geoRadiusMeters = geoRadius * 1000;
-		$.getJSON( 'http://localhost:5000/geonames?geoPoint=' + pos.lat + ', ' + pos.lng + '&geoRadius=' + geoRadiusMeters +'&limit=500', function( data ) {
+		$.getJSON( 'https://api.epandda.org/geonames?geoPoint=' + pos.lat + ', ' + pos.lng + '&geoRadius=' + geoRadiusMeters +'&limit=500', function( data ) {
 			specimens_results = data;
 			// add all the specimen points to the map
 			var specimens;
@@ -328,7 +328,7 @@ function setHomePageStats() {
 
 
 	$.ajax({
-		url: 'http://localhost:5000/stats?totalRecords=1',
+		url: 'https://api.epandda.org/stats?totalRecords=1',
 		method: "GET",
 		dataType: "json",
 		crossDomain: "true",
@@ -339,7 +339,7 @@ function setHomePageStats() {
 		}
 	});
 	$.ajax({
-		url: 'http://localhost:5000/stats?taxonomies=1',
+		url: 'https://api.epandda.org/stats?taxonomies=1',
 		method: "GET",
 		dataType: "json",
 		crossDomain: "true",
@@ -350,7 +350,7 @@ function setHomePageStats() {
 		}
 	});
 	$.ajax({
-		url: 'http://localhost:5000/stats?localities=1',
+		url: 'https://api.epandda.org/stats?localities=1',
 		method: "GET",
 		dataType: "json",
 		crossDomain: "true",
@@ -368,7 +368,7 @@ function setHomePageStats() {
 
 function getTaxaImages(taxon, limit, page){
 
-	var taxonURL = 'http://localhost:5000/taxonomy?fullTaxonomy=' + taxon + '&images=true'
+	var taxonURL = 'https://api.epandda.org/taxonomy?fullTaxonomy=' + taxon + '&images=true'
 	var counter = 0;
 	var rowCounter = 0;
 	var offset = page * 12;
@@ -469,7 +469,7 @@ function sendBugReport(){
 		var sendData = $("#BugReport").serialize();
 	}
 	$.ajax({
-		url: 'http://localhost:5000/bugReport',
+		url: 'https://api.epandda.org/bugReport',
 		method: "POST",
 		data: sendData,
 		dataType: "json",
