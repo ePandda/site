@@ -4,6 +4,17 @@
 // original minified navigo script - navigo code is now in navigoScripts.js and was changed to always use hash
 //$(document).ready(function(){var o,n=function(o){ return document.querySelector(o) },t=function(o){$("#"+o).empty()},e=function(o,n,t){$("#"+n).append(t||$("#"+o).html())},a=function(n){o=new Navigo(null,"hash"===n),o.on({home:function(){t("content-body"),e("component-headerlarge","content-body"),e("component-nav","content-body"),e("content-home","content-body"),e("component-nowsearching","content-body"),e("component-colorbars","content-body"),e("component-nsf","content-body"),e("component-footer","content-body"),getPhyloPics(),getApiStatus(),demoQuery()},examples:function(){t("content-body"),e("component-headerlarge","content-body"),e("component-nav","content-body"),e("content-examples","content-body"),e("component-footer","content-body")},reference:function(){t("content-body"),e("component-headerlarge","content-body"),e("component-nav","content-body"),e("content-reference","content-body"),e("component-footer","content-body")},sandbox:function(){t("content-body"),e("component-headerlarge","content-body"),e("component-nav","content-body"),e("content-sandbox","content-body"),e("component-footer","content-body")},about:function(){t("content-body"),e("component-headerlarge","content-body"),e("component-nav","content-body"),e("content-about","content-body"),e("component-footer","content-body")}}),o.on(function(){t("content-body"),e("component-headerlarge","content-body"),e("component-nav","content-body"),e("content-home","content-body"),e("component-nowsearching","content-body"),e("component-colorbars","content-body"),e("component-nsf","content-body"),e("component-footer","content-body"),getPhyloPics(),getApiStatus(),demoQuery()}),o.resolve()},c=function(){var t=n(".js-mode-trigger"),e="history-api",a=!!window.localStorage,c=function(o){t.querySelector("input").checked="hash"===o};return a&&(e=localStorage.getItem("navigo")||e),c(e),t.addEventListener("click",function(){e="history-api"===e?"hash":"history-api",a&&localStorage.setItem("navigo",e),window.location.href=(o.root||"").replace("#",""),setTimeout(function(){window.location.reload(!0)},200)}),e},r=function(){a(c())};window.onload=r});
 var numRecordsAll;
+var api_url;
+$.ajax({
+	url: "js/config.json",
+	method: "GET",
+	dataType: "json",
+	async: false,
+	success: function(json){
+		api_url = json.api_url
+	}
+});
+
 $(document).ready(function(){
 	$.get('endpoint_doc.html', function(data){
 		$('#content-documentation').text(data);
@@ -17,12 +28,11 @@ $(document).ready(function(){
 	$.get('bug_report.html', function(data){
 		$('#sandboxContent').append(data);
 	});
-
 	//$.get('about_bug_report.html', function(data){
 	//	$('#content-about').append(data);
 	//});
 	$.ajax({
-		url: 'http://localhost:5000/stats?totalRecords=1',
+		url: api_url + 'stats?totalRecords=1',
 		method: "GET",
 		dataType: "json",
 		crossDomain: "true",
@@ -155,7 +165,7 @@ $(document).ready(function(){
 
     function plotSpecimen(map, infoWindow, pos, geoRadius){
 		var geoRadiusMeters = geoRadius * 1000;
-		$.getJSON( 'http://localhost:5000/geonames?geoPoint=' + pos.lat + ', ' + pos.lng + '&geoRadius=' + geoRadiusMeters +'&limit=500', function( data ) {
+		$.getJSON( api_url + 'geonames?geoPoint=' + pos.lat + ', ' + pos.lng + '&geoRadius=' + geoRadiusMeters +'&limit=500', function( data ) {
 			specimens_results = data;
 			// add all the specimen points to the map
 			var specimens;
@@ -328,7 +338,7 @@ function setHomePageStats() {
 
 
 	$.ajax({
-		url: 'http://localhost:5000/stats?totalRecords=1',
+		url: api_url + 'stats?totalRecords=1',
 		method: "GET",
 		dataType: "json",
 		crossDomain: "true",
@@ -339,7 +349,7 @@ function setHomePageStats() {
 		}
 	});
 	$.ajax({
-		url: 'http://localhost:5000/stats?taxonomies=1',
+		url: api_url + 'stats?taxonomies=1',
 		method: "GET",
 		dataType: "json",
 		crossDomain: "true",
@@ -350,7 +360,7 @@ function setHomePageStats() {
 		}
 	});
 	$.ajax({
-		url: 'http://localhost:5000/stats?localities=1',
+		url: api_url + 'stats?localities=1',
 		method: "GET",
 		dataType: "json",
 		crossDomain: "true",
@@ -368,7 +378,7 @@ function setHomePageStats() {
 
 function getTaxaImages(taxon, limit, page){
 
-	var taxonURL = 'http://localhost:5000/taxonomy?fullTaxonomy=' + taxon + '&images=true'
+	var taxonURL = api_url + 'taxonomy?fullTaxonomy=' + taxon + '&images=true'
 	var counter = 0;
 	var rowCounter = 0;
 	var offset = page * 12;
@@ -469,7 +479,7 @@ function sendBugReport(){
 		var sendData = $("#BugReport").serialize();
 	}
 	$.ajax({
-		url: 'http://localhost:5000/bugReport',
+		url: api_url + 'bugReport',
 		method: "POST",
 		data: sendData,
 		dataType: "json",
