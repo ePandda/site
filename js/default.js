@@ -373,13 +373,15 @@ function setHomePageStats() {
 // ======================================== IDB Image Widget
 // ====================================================================
 
-function getTaxaImages(taxon, limit, page){
+function getTaxaImages(taxon, taxonRank, limit, page){
 
-	var taxonURL = api_url + 'taxonomy?fullTaxonomy=' + taxon + '&images=true'
+	var taxonURL = api_url + 'es_occurrences?terms=' + taxonRank + ':' + taxon + '&returnMedia=true&limit=500&taxonMatchLevel=' + taxonRank;
 	var counter = 0;
 	var rowCounter = 0;
 	var offset = page * 12;
 	var tempString = '';
+	var pageString = '';
+	var mediaURIs = [];
 	$('#idbImages').html("<h1> <i class='fa fa-cog fa-spin fa-fw'></i><i class='fa fa-cog fa-spin fa-fw'></i><i class='fa fa-cog fa-spin fa-fw'></i> Loading...</h1>");
 	$.ajax({
 		url: taxonURL,
@@ -388,7 +390,26 @@ function getTaxaImages(taxon, limit, page){
 		crossDomain: "true",
 		success: function(data){
 			$('#idbImages').html('');
-			var mediaURIs = data.media;
+			var results = data.results;
+			for(group in results){
+				var result = results[group];
+				var mediaArray = null;
+				if(result['sourceType'] == 'idigbio'){
+					mediaArray = result.sources;
+				} else {
+					mediaArray = result.matches;
+				}
+				if(mediaArray){
+					for(var j = 0; j < mediaArray.length; j++){
+						var idigbio = mediaArray[j];
+						if('mediaURLs' in idigbio){
+							for(var k = 0; k < idigbio['mediaURLs'].length; k++){
+								mediaURIs.push([idigbio['url'], idigbio['mediaURLs'][k]])
+							}
+						}
+					}
+				}
+			}
 			var mediaCount = mediaURIs.length;
 			if(mediaCount == 0){
 				$('#idbImages').html('<div class="coll-full"><h3>No Image Results for that term</h3></div>');
@@ -397,48 +418,61 @@ function getTaxaImages(taxon, limit, page){
 				$('#idbPagingNext').html('');
 				return false;
 			}
-			//mediaURIs.push(['http://google.com', 'http://arctos.database.museum/media/10323136']);
-
-			$('#idbImages').append("<div class='row'>");
+			var imageWidth = $('#idbImages').width();
+			$('#idbImages').html('<div id="imageWrapper"><div id="imageCarousel"></div></div>');
 			mediaURIs.forEach(function(uri){
-				if(counter < (limit + offset) && counter >= offset){
-					$('[src="'+ uri[1] + '"]').error(function(){
-							var replaceDiv = $('[src="'+ uri[1] + '"]').parent();
-							replaceDiv.html('<div class="imagePlaceholder"><i class="fa fa-image fa-5x"></i><br/>Unable to load image:<br/><a href="' + uri[1] + '">' + uri[1] + '</a></div><a href="' + uri[0] + '" target="_blank" ">iDigBio Record</a>');
-					});
-					tempString += '<div class="col-4 imageResult"><img src="' + uri[1] + '"/><a href="' + uri[0] + '" target="_blank" ">iDigBio Record</a></div>';
-					rowCounter++;
-					if(rowCounter % 3 == 0){
-						$('#idbImages').append('<div class="row">' + tempString + "</div>");
-						tempString = '';
-					}
+
+				$('[src="'+ uri[1] + '"]').error(function(){
+						var replaceDiv = $('[src="'+ uri[1] + '"]').parent();
+						replaceDiv.html('<div class="imagePlaceholder"><i class="fa fa-image fa-5x"></i><br/>Unable to load image:<br/><a href="' + uri[1] + '">' + uri[1] + '</a></div><a href="' + uri[0] + '" target="_blank" ">iDigBio Record</a>');
+				});
+				tempString += '<div class="col-4 imageResult"><img src="' + uri[1] + '"/><a href="' + uri[0] + '" target="_blank" ">iDigBio Record</a></div>';
+				rowCounter++;
+				if(rowCounter % 3 == 0){
+					pageString += '<div class="row">' + tempString + "</div>";
+					tempString = '';
 				}
 				counter++;
+				if(counter % 12 == 0){
+					$('#imageCarousel').append('<div class="carouselPage" style="width:'+imageWidth+'px">' + pageString + '</div>');
+					pageString = '';
+				}
 
 			});
 			if(rowCounter % 3 != 0){
-				$('#idbImages').append('<div class="row">' + tempString + "</div>");
+				pageString += '<div class="row">' + tempString + "</div>";
+			}
+			if(counter % 12 != 0){
+				$('#imageCarousel').append('<div class="carouselPage" style="width:'+imageWidth+'px">' + pageString + '</div>');
 			}
 			var pages = Math.ceil(mediaCount/limit);
+			$("#imageCarousel").width(pages*imageWidth);
 			if($('#idbPagingPrev').html() == ''){
-				$('#idbPagingPrev').html('<button class="button pagingButton" onclick="getTaxaImages(\'' + taxon + '\', ' + limit + ', '+ (page - 1) + '); $(window).scrollTop($(\'#idbImages\').offset().top-50); return false;">Prev</button>');
+				$('#idbPagingPrev').html('<button class="button pagingButton disabled" onclick="scrollImages(-'+imageWidth+', '+pages+'); return false;">Prev</button>');
 			}
+			$('#idbPagingText').html('<h5>Page 1/' + pages + '</h5>');
 			if($('#idbPagingNext').html() == ''){
-				$('#idbPagingNext').html('<button class="button pagingButton" onclick="getTaxaImages(\'' + taxon + '\', ' + limit + ', '+ (page + 1) + '); $(window).scrollTop($(\'#idbImages\').offset().top-50); return false;">Next</button>');
-			}
-			if(page+1 > 1){
-				$('#idbPagingPrev').html('<button class="button pagingButton" onclick="getTaxaImages(\'' + taxon + '\', ' + limit + ', '+ (page - 1) + '); $(window).scrollTop($(\'#idbImages\').offset().top-50); return false;">Prev</button>');
-			} else {
-				$('#idbPagingPrev .pagingButton').addClass('disabled');
-			}
-			$('#idbPagingText').html('<h5>Page ' + (page + 1) + '/' + pages + '</h5>');
-			if(page+1 < pages){
-				$('#idbPagingNext').html('<button class="button pagingButton" onclick="getTaxaImages(\'' + taxon + '\', ' + limit + ', '+ (page + 1) + '); $(window).scrollTop($(\'#idbImages\').offset().top-50); return false;">Next</button>');
-			} else {
-				$('#idbPagingNext .pagingButton').addClass('disabled');
+				$('#idbPagingNext').html('<button class="button pagingButton" onclick="scrollImages('+imageWidth+', '+pages+'); return false;">Next</button>');
 			}
 		}
 	});
+}
+
+function scrollImages(width, pages){
+	var currentPos = $('#imageWrapper').scrollLeft();
+	$('#imageWrapper').scrollLeft(currentPos+width);
+	var movePos = $('#imageWrapper').scrollLeft();
+	var page = (Math.ceil(movePos/Math.abs(width)))+1;
+	$('#idbPagingText').html('<h5>Page ' + page + '/' + pages + '</h5>');
+	$('#idbPagingNext .pagingButton').removeClass('disabled');
+	$('#idbPagingPrev .pagingButton').removeClass('disabled');
+	if(movePos+width >= pages*Math.abs(width)){
+		$('#idbPagingNext .pagingButton').addClass('disabled');
+	}
+	if(movePos <= 0){
+		$('#idbPagingPrev .pagingButton').addClass('disabled');
+	}
+	console.log(currentPos, currentPos+width, pages*width)
 }
 
 function urlChecker(url, callback) {

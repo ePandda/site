@@ -16,7 +16,7 @@
 					<!-- googleAPI key AIzaSyAV0UQ1OJmq78zqZeHjcsldYp_VWUmsPwg -->
 					<input id="pac-input" class="controls" type="text" placeholder="Enter search term">
 					<input id="radius-input" class="controls" type="number" min="0.1" max="100" step="0.1" placeholder="Radius, in km">
-					<div id="map" style="height:400px; border:1px solid #EDEDED;"></div>			
+					<div id="map" style="height:400px; border:1px solid #EDEDED;"></div>
 				</div>
 			</div>
 			<div class="row">
@@ -133,7 +133,7 @@
 			infoWindow.setContent('Please wait while we locate your position');
 			infoWindow.open(map);
 			map.setCenter(initPos);
-		
+
 			// Create the search box and link it to the UI element.
 			var input = document.getElementById('pac-input');
 			var searchBox = new google.maps.places.SearchBox(input);
@@ -330,12 +330,17 @@
 				<div class="col-full">
 					<br/>
 					<br/>
-					<h1>Image Search</h1>
+					<h1>Image Search (Returns top 500 matches from ePandda)</h1>
 					<p>Search for any taxa and view images contributed to iDigBio that match that term, results include links to the iDigBio record for each associated specimen.<br/>Search terms can be broad or specific and include be either scientific or vernacular names such as: <strong>scorpiones</strong>, <strong>hadrosaurus</strong>, <strong>triceratops</strong> or <strong>ursus arctos</strong></p>
 					<form id="imageSearch">
 						<label><strong>Taxonomic Term </strong></label>
 						<input type="text" id="taxonTerm" name="taxonTerm" class="form-element">
-						<button class="button imageSearchButton" onclick="getTaxaImages($('#taxonTerm').val(), 12, 0); return false;">Search</button>
+                        <select id="taxonRank" name="taxonRank" class="form-element">
+                            <option value="scientificname">Scientific Name</option>
+                            <option value="genus">Genus</option>
+                            <option value="family">Family</option>
+                        </select>
+						<button class="button imageSearchButton" onclick="getTaxaImages($('#taxonTerm').val(), $('#taxonRank').val(), 12, 0); return false;">Search</button>
 					</form>
 				</div>
 			</div>
@@ -346,7 +351,7 @@
 						<div class="col-4-m push-4">
 							<div class="row">
 								<div id="idbPagingPrev" class="col-4-m"></div>
-								<div id="idbPagingText" class="col-4-m"a></div>
+								<div id="idbPagingText" class="col-4-m"></div>
 								<div id="idbPagingNext" class="col-4-m"></div>
 							</div>
 						</div>
@@ -372,46 +377,46 @@
     <title>Image Search by Taxonomy</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <style>
-    	
+
     	div {
     		display: block;
     	}
-    	
+
     	* {
     		font-family: arial, 'sans-serif';
     		box-sizing: border-box;
     		overflow: auto;
     	}
-    	
+
     	a{
     		color: #009345;
     	}
-    	
+
     	a:hover{
     		color: #8bc53f;
     	}
-    	
+
     	h5{
     		margin: 0
     	}
-    	
+
     	#imageSearchBody{
     		width: 90%;
     		padding: 0 4.5%;
     	}
-    	
+
     	.row{
     		position: relative;
     		margin: 0 -15px;
     		height: inherit;
     	}
-    	
+
     	#taxonTerm {
     		height: 35px;
     		font-size: 14px;
     		padding-left: 10px;
     	}
-    	
+
 		.imageSearchButton{
 			height: 40px;
 			margin-left: 20px;
@@ -467,7 +472,7 @@
 		#idbImagePaging{
 			text-align: center;
 		}
-		
+
 		.centerThird{
 			width: 33.3333%;
 			left: 33.33333%;
@@ -475,21 +480,21 @@
 			float: left;
 			padding: 0 15px;
 		}
-		
+
 		#idbPagingPrev, #idbPagingText, #idbPagingNext{
 			width: 33.3333%;
 			position: relative;
 			float: left;
 			padding: 0 15px;
 		}
-		
+
 		.pagingButton{
 			padding: 0 20px;
 			background-color: #f3f3f3;
 			border: 1px solid #d7d7d7;
 			font-size: 16px
 		}
-		
+
     </style>
   </head>
   <body>
@@ -591,7 +596,7 @@
 				}
 			});
 		}
-		
+
 		function imageExists(url, callback) {
 		  var img = new Image();
 		  img.onload = function() { callback(true); };

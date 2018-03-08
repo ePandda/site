@@ -163,7 +163,7 @@ section p{
     height: 35px;
 }
 
-#searchButton{
+#searchButton, #appendMore{
 	width: 100%;
 	font-size: 20px;
 	background-color: #8bc53f;
@@ -356,6 +356,19 @@ section p{
 
 #idbImagePaging{
 	text-align: center;
+}
+
+#imageWrapper{
+	overflow-x: auto;
+}
+
+#imageCarousel{
+	position: relative;
+}
+
+.carouselPage{
+	display: inline-block;
+	float: left;
 }
 
 .bugForm{

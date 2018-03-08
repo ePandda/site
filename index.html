@@ -510,7 +510,7 @@
 							<div id="apiFormElements">
 
 							</div>
-                            <button id="searchButton" class="button" onClick="processForm($('#apiForm').serializeArray(), '#apiResultsContainer', 100, 0); toggleForm('#apiForm'); return false;">Search</button>
+                            <button id="searchButton" class="button" onClick="processForm($('#apiForm').serializeArray(), '#apiResultsContainer', 25, 1); toggleForm('#apiForm'); return false;">Search</button>
 						</form>
 
 					</div>
@@ -525,7 +525,16 @@
                         <div id="apiResultsButtons" class="row"></div>
                         <div id="apiUIResultsContainer"></div>
                         <div id="apiResultsJSON"></div>
-                        <div id="apiLoadAdditionalResult"></div>
+                        <div class="row">
+                            <div class="push-3 col-6 text-center">
+                                <div id="apiLoadAdditionalResult"></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="push-3 col-6 text-center">
+                                <div id="apiAdditionalLoading"></div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
