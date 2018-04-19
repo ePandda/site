@@ -14,7 +14,7 @@ var routing = function (mode) {
       addContent("content-sandbox", "content-body");
       addContent("component-footer", "content-body");
       window.scrollTo(0, 0);
-      //renderFormDropdown('#apiDropdownContainer', '#apiFormContainer');
+      renderFormDropdown('#apiDropdownContainer', '#apiFormContainer');
 	  renderForm('es_occurrences', '#apiFormContainer')
 
     },

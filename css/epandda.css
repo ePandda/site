@@ -135,6 +135,12 @@ section p{
 	min-height: 110px;
 }
 
+@media only screen and (max-width: 980px){
+    #apiFormContainer .form-group{
+        min-height: 140px !important;
+    }
+}
+
 #apiFormContainer .form-group .form-bottom{
 	position: absolute;
 	bottom: 0;

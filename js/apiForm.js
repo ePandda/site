@@ -11,28 +11,33 @@ $.ajax({
 
 function renderFormDropdown(container, formContainer){
 	$.ajax({
-		url: api_url + '/es_occurrences',
+		url: api_url + '/',
 		method: "GET",
 		dataType: "json",
 		crossDomain: "true",
 		formContainer: formContainer,
 		success: function(data){
-			//var select = 'Choose a form to query the API: <select name="endpoint" id="endpoint" onChange="renderForm($(\'#endpoint\').val(), \'' + this.formContainer + '\');">';
-			for (var i = 0; i < data.routes.length; i++) {
+		    for (var i = 0; i < data.routes.length; i++) {
 				var optionInfo = data.routes[i];
 				var endpoint = optionInfo.url.replace("/", "");
-				if(endpoint && (endpoint !== "query") && (endpoint !== "stats")){
-					select += "<option value='" + endpoint + "'>" + optionInfo.name + "</option>\n";
-					if(endpoint == 'occurrences'){
+				var endpointRow = '';
+				if(endpoint && (endpoint == "es_occurrences" || endpoint == "es_publications")){
+				    console.log(optionInfo);
+				    endpointRow += '<div class="row"><div class="col-12 col-3-m"><H2>' + optionInfo.name + '</H2></div>';
+				    endpointRow += '<div class="col-9 col-7-m col-8-xl"><p>' + optionInfo.description + '</p></div>';
+				    endpointRow += '<div class="col-3 col-2-m col-1-xl"><h3><button type="button" id="searchCollapse_' + endpoint + '" onClick="toggleForm(\'#apiForm_' + endpoint + '\');">[ &mdash; ]</button></h3></div></div>';
+				    
+					//select += "<option value='" + endpoint + "'>" + optionInfo.name + "</option>\n";
+					//if(endpoint == 'es_occurrences'){
 						// load the form for the occurrence Search
 						// This is the most general and best introduction
-						renderForm(endpoint, formContainer);
-					}
+					//	renderForm(endpoint, formContainer);
+					//}
 				}
 			}
-			select += "</select>";
-			$(container).html(select);
-			$('#endpoint').val('occurrences');
+			//elect += "</select>";
+			//$(container).html(select);
+			//$('#endpoint').val('occurrences');
 		}
 	});
 }
@@ -82,7 +87,7 @@ function toggleForm(formID){
 	}
 }
 
-function processForm(formData, resultContainer, limit, page, idigbioSearchAfter=null, pbdbSearchAfter=null, append=false){
+function processForm(formData, resultContainer, limit, page, idigbioSearchAfter, pbdbSearchAfter, append){
 	var apiParams = "";
 	for (var i = 0; i < formData.length; i++){
 		if(formData[i]['name'] == 'endpoint'){
@@ -173,13 +178,18 @@ function processForm(formData, resultContainer, limit, page, idigbioSearchAfter=
 				$('#apiAdditionalLoading').html("");
 			},
 			error: function (jqXHR, exception) {
+				var errorMsg = JSON.parse(jqXHR.responseText);
+				for (var line in errorMsg.errors){
+					var errorLine = errorMsg.errors[line];
+					break;
+				}
 				var msg = '';
 				if (jqXHR.status === 0) {
-					msg = 'Not connect.\n Verify Network.';
+					msg = 'Not connect.\n Verify Network.<br/>' + errorLine;
 				} else if (jqXHR.status == 404) {
 					msg = 'Requested page not found. [404]';
 				} else if (jqXHR.status == 500) {
-					msg = 'Internal Server Error [500].';
+					msg = 'Internal Server Error [500].<br/>' + errorLine;
 				} else if (exception === 'parsererror') {
 					msg = 'Requested JSON parse failed.';
 				} else if (exception === 'timeout') {

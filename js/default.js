@@ -32,7 +32,7 @@ $(document).ready(function(){
 	//	$('#content-about').append(data);
 	//});
 	$.ajax({
-		url: api_url + 'stats?totalRecords=1',
+		url: api_url + '/stats?totalRecords=1',
 		method: "GET",
 		dataType: "json",
 		crossDomain: "true",
@@ -165,7 +165,7 @@ $(document).ready(function(){
 
     function plotSpecimen(map, infoWindow, pos, geoRadius){
 		var geoRadiusMeters = geoRadius * 1000;
-		$.getJSON( api_url + 'es_occurrences?terms=geoPoint:' + pos.lat + ', ' + pos.lng + '&geoRadius=' + geoRadiusMeters +'&limit=500', function( data ) {
+		$.getJSON( api_url + '/es_occurrences?terms=geoPoint:' + pos.lat + ', ' + pos.lng + '&geoRadius=' + geoRadiusMeters +'&limit=500', function( data ) {
 			var specimen_results = data;
 			// add all the specimen points to the map
 			for(var resKey in specimen_results.results){
@@ -335,7 +335,7 @@ function setHomePageStats() {
 
 
 	$.ajax({
-		url: api_url + 'stats?totalRecords=1',
+		url: api_url + '/stats?totalRecords=1',
 		method: "GET",
 		dataType: "json",
 		crossDomain: "true",
@@ -346,7 +346,7 @@ function setHomePageStats() {
 		}
 	});
 	$.ajax({
-		url: api_url + 'stats?taxonomies=1',
+		url: api_url + '/stats?taxonomies=1',
 		method: "GET",
 		dataType: "json",
 		crossDomain: "true",
@@ -357,7 +357,7 @@ function setHomePageStats() {
 		}
 	});
 	$.ajax({
-		url: api_url + 'stats?localities=1',
+		url: api_url + '/stats?localities=1',
 		method: "GET",
 		dataType: "json",
 		crossDomain: "true",
@@ -375,7 +375,7 @@ function setHomePageStats() {
 
 function getTaxaImages(taxon, taxonRank, limit, page){
 
-	var taxonURL = api_url + 'es_occurrences?terms=' + taxonRank + ':' + taxon + '&returnMedia=true&limit=500&taxonMatchLevel=' + taxonRank;
+	var taxonURL = api_url + '/es_occurrences?terms=' + taxonRank + ':' + taxon + '&returnMedia=true&limit=500&taxonMatchLevel=' + taxonRank;
 	var counter = 0;
 	var rowCounter = 0;
 	var offset = page * 12;
@@ -510,7 +510,7 @@ function sendBugReport(){
 		var sendData = $("#BugReport").serialize();
 	}
 	$.ajax({
-		url: api_url + 'bugReport',
+		url: api_url + '/bugReport',
 		method: "POST",
 		data: sendData,
 		dataType: "json",

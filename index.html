@@ -496,13 +496,13 @@
             		<h1>Sandbox</h1>
 					<div id="apiFormContainer">
                         <div class="row">
-                            <div class="col-3">
+                            <div class="col-12 col-3-m">
                                 <H2 id='apiFormLabel'></H2>
                             </div>
-                            <div class="col-8">
+                            <div class="col-9 col-7-m col-8-xl">
                                 <p id='apiFormDescription'></p>
                             </div>
-                            <div class="col-1">
+                            <div class="col-3 col-2-m col-1-xl">
                                 <h3><button type="button" id="searchCollapse" onClick="toggleForm('#apiForm');">[ &mdash; ]</button></h3>
                             </div>
                         </div>
@@ -510,7 +510,7 @@
 							<div id="apiFormElements">
 
 							</div>
-                            <button id="searchButton" class="button" onClick="processForm($('#apiForm').serializeArray(), '#apiResultsContainer', 25, 1); toggleForm('#apiForm'); return false;">Search</button>
+                            <button id="searchButton" class="button" onClick="processForm($('#apiForm').serializeArray(), '#apiResultsContainer', 25, 1, null, null, false); toggleForm('#apiForm'); return false;">Search</button>
 						</form>
 
 					</div>
