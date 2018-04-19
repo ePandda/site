@@ -9,7 +9,7 @@ $.ajax({
 	}
 });
 
-function renderFormDropdown(container, formContainer){
+function renderEndpoints(endpointContainer, formContainer){
 	$.ajax({
 		url: api_url + '/',
 		method: "GET",
@@ -22,35 +22,30 @@ function renderFormDropdown(container, formContainer){
 				var endpoint = optionInfo.url.replace("/", "");
 				var endpointRow = '';
 				if(endpoint && (endpoint == "es_occurrences" || endpoint == "es_publications")){
-				    console.log(optionInfo);
-				    endpointRow += '<div class="row"><div class="col-12 col-3-m"><H2>' + optionInfo.name + '</H2></div>';
+				    endpointRow += '<div id="endpointRow_' + endpoint + '" class="row endpointHeader"><div class="col-12 col-3-m"><H2>' + optionInfo.name + '</H2></div>';
 				    endpointRow += '<div class="col-9 col-7-m col-8-xl"><p>' + optionInfo.description + '</p></div>';
-				    endpointRow += '<div class="col-3 col-2-m col-1-xl"><h3><button type="button" id="searchCollapse_' + endpoint + '" onClick="toggleForm(\'#apiForm_' + endpoint + '\');">[ &mdash; ]</button></h3></div></div>';
-				    
-					//select += "<option value='" + endpoint + "'>" + optionInfo.name + "</option>\n";
-					//if(endpoint == 'es_occurrences'){
-						// load the form for the occurrence Search
-						// This is the most general and best introduction
-					//	renderForm(endpoint, formContainer);
-					//}
+				    endpointRow += '<div class="col-3 col-2-m col-1-xl"><h3><button type="button" class="searchCollapse" id="searchCollapse_' + endpoint + '" onClick="toggleForm(\'' + endpoint + '\', \'#apiForm\');">[ &mdash; ]</button></h3></div></div>';
+					$(endpointContainer).append(endpointRow);
+					if(endpoint == "es_occurrences"){
+						renderForm(endpoint, formContainer);
+						$('#endpointRow_' + endpoint).addClass('activeSearch');
+					} else {
+						$('#searchCollapse_' + endpoint).html('[ + ]')
+					}
 				}
 			}
-			//elect += "</select>";
-			//$(container).html(select);
-			//$('#endpoint').val('occurrences');
 		}
 	});
 }
 function renderForm(endpoint, container){
+	$('#apiFormElements').html('');
+	$('#apiForm').data('endpoint', endpoint);
 	$.ajax({
-		url: api_url + endpoint,
+		url: api_url + '/' + endpoint,
 		method: "GET",
 		dataType: "json",
 		crossDomain: "true",
 		success: function(data){
-			$(container + ' #apiFormLabel').text(data.name);
-			$(container + ' #apiFormDescription').text(data.description);
-			$(container + ' #apiFormElements').text("");
 			for (var i = 0; i < data.params.length; i++) {
 				var elementInfo = data.params[i];
 				if(elementInfo.display == false){ continue; }
@@ -72,18 +67,38 @@ function renderForm(endpoint, container){
 				$(container + ' #apiFormElements').append(formElement);
 
 			}
-
+			$('#apiButton').html('<button id="searchButton" class="button" onClick="processForm($(\'#apiForm\').serializeArray(), \'#apiResultsContainer\', 25, 1, null, null, false); toggleForm(\'' + endpoint + '\', \'#apiForm\'); return false;">Search</button>')
 			$(container + ' #apiFormElements').append("<input type='hidden' name='endpoint' value='" + endpoint + "'>");
+			//toggleForm('#apiForm', endpoint)
 		}
 	});
 }
 
-function toggleForm(formID){
-	$(formID).toggle();
-	if($(formID).is(":visible")){
-		$('#searchCollapse').html('[ &mdash; ]');
+function toggleForm(endpoint, formID){
+	if($(formID).data("endpoint") && $(formID).data("endpoint") != endpoint){
+		$('#searchCollapse_' + endpoint).html('[ &mdash; ]');
+		$('#endpointRow_' + endpoint).addClass('activeSearch');
+		renderForm(endpoint, '#apiFormContainer');
+		if($(formID).is(":visible") == false){
+			$(formID).toggle();
+		}
+		$('.searchCollapse').not($('#searchCollapse_' + endpoint)).each(function(){
+			$(this).html('[ + ]');
+		})
+		$('.endpointHeader').not($('#endpointRow_' + endpoint)).each(function(){
+			$(this).removeClass('activeSearch');
+		})
 	} else {
-		$('#searchCollapse').html('[ + ]');
+		if($(formID).is(":visible")){
+			console.log("HIDING ENDPOINT");
+			$('#searchCollapse_' + endpoint).html('[ + ]');
+			$('#endpointRow_' + endpoint).removeClass('activeSearch');
+		} else {
+			console.log("SHOWING ENDPOINT");
+			$('#searchCollapse_' + endpoint).html('[ &mdash; ]');
+			$('#endpointRow_' + endpoint).addClass('activeSearch');
+		}
+		$(formID).toggle();
 	}
 }
 
@@ -126,7 +141,7 @@ function processForm(formData, resultContainer, limit, page, idigbioSearchAfter,
 
 		$.ajax({
 
-			url: api_url + endpoint + "?" + apiParams,
+			url: api_url + '/' + endpoint + "?" + apiParams,
 			method: "GET",
 			dataType: "json",
 			crossDomain: "true",
@@ -168,7 +183,6 @@ function processForm(formData, resultContainer, limit, page, idigbioSearchAfter,
 						pbdbNext += data.queryInfo.pbdbTotal
 					}
 				}
-				console.log(page, pbdbNext, idbNext);
 				if(pbdbNext || idbNext){
 					var buttonText = "Load " + idbNext + ' ' + pbdbNext;
 					$('#apiLoadAdditionalResult').html('<button class="button" id="appendMore" onClick="processForm($(\'#apiForm\').serializeArray(), \'#apiResultsContainer\', 25, '+nextPage+', '+data.idigbio_search_after+', '+data.pbdb_search_after+', true);">' + buttonText + '</button>');
@@ -260,7 +274,12 @@ function returnUIResults(data){
 						listHTML += '<i class="fa fa-globe"></i> ';
 					}
 					listHTML += src['accepted_name'] + "</div>";
-					listHTML += '<div class="col-6"><a href="' + src['url'] + '" target="_blank">' + src['occurrence_no'] + "</a></div>";
+
+					var record_id = src['occurrence_no'];
+					if(src['reference_no']){
+						record_id = src['reference_no']
+					}
+					listHTML += '<div class="col-6"><a href="' + src['url'] + '" target="_blank">' + record_id + "</a></div>";
 				}
 				listHTML += '</div>';
 
@@ -288,7 +307,11 @@ function returnUIResults(data){
 							listHTML += '<i class="fa fa-globe"></i> ';
 						}
 						listHTML += mtc['accepted_name'] + "</div>";
-						listHTML += '<div class="col-6"><a href="' + mtc['url'] + '" target="_blank">' + mtc['occurrence_no'] + "</a></div>";
+						var record_id = src['occurrence_no'];
+						if(mtc['reference_no']){
+							record_id = mtc['reference_no']
+						}
+						listHTML += '<div class="col-6"><a href="' + mtc['url'] + '" target="_blank">' + record_id + "</a></div>";
 					}
 					listHTML += '</div>';
 				});
@@ -312,10 +335,8 @@ function appendUIResults(data){
 		var matchID = $(this).attr('id');
 		matchList.push(matchID);
 	});
-	console.log(matchList);
 	var matchCount = matchList.length + 1;
 	for(var key in data.results){
-		console.log(key);
 		var match = data.results[key]
 		if(matchList.indexOf(key) > -1){
 			var sourceText = $('#'+key+'Sources').html();
@@ -481,7 +502,6 @@ function returnMoreResults(data, recordType){
 	matches = []
 	listHTML = '<div id="apiUIMoreList">';
 	var matchCount = 1;
-	console.log(data.total);
 	data.results.forEach(function(res){
 		listHTML += '<div class="row"><div class="col-12">';
 		if(recordType == 'idigbio'){

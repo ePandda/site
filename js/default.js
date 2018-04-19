@@ -5,6 +5,7 @@
 //$(document).ready(function(){var o,n=function(o){ return document.querySelector(o) },t=function(o){$("#"+o).empty()},e=function(o,n,t){$("#"+n).append(t||$("#"+o).html())},a=function(n){o=new Navigo(null,"hash"===n),o.on({home:function(){t("content-body"),e("component-headerlarge","content-body"),e("component-nav","content-body"),e("content-home","content-body"),e("component-nowsearching","content-body"),e("component-colorbars","content-body"),e("component-nsf","content-body"),e("component-footer","content-body"),getPhyloPics(),getApiStatus(),demoQuery()},examples:function(){t("content-body"),e("component-headerlarge","content-body"),e("component-nav","content-body"),e("content-examples","content-body"),e("component-footer","content-body")},reference:function(){t("content-body"),e("component-headerlarge","content-body"),e("component-nav","content-body"),e("content-reference","content-body"),e("component-footer","content-body")},sandbox:function(){t("content-body"),e("component-headerlarge","content-body"),e("component-nav","content-body"),e("content-sandbox","content-body"),e("component-footer","content-body")},about:function(){t("content-body"),e("component-headerlarge","content-body"),e("component-nav","content-body"),e("content-about","content-body"),e("component-footer","content-body")}}),o.on(function(){t("content-body"),e("component-headerlarge","content-body"),e("component-nav","content-body"),e("content-home","content-body"),e("component-nowsearching","content-body"),e("component-colorbars","content-body"),e("component-nsf","content-body"),e("component-footer","content-body"),getPhyloPics(),getApiStatus(),demoQuery()}),o.resolve()},c=function(){var t=n(".js-mode-trigger"),e="history-api",a=!!window.localStorage,c=function(o){t.querySelector("input").checked="hash"===o};return a&&(e=localStorage.getItem("navigo")||e),c(e),t.addEventListener("click",function(){e="history-api"===e?"hash":"history-api",a&&localStorage.setItem("navigo",e),window.location.href=(o.root||"").replace("#",""),setTimeout(function(){window.location.reload(!0)},200)}),e},r=function(){a(c())};window.onload=r});
 var numRecordsAll;
 var api_url;
+var lastUpdated;
 $.ajax({
 	url: "js/config.json",
 	method: "GET",
@@ -32,14 +33,18 @@ $(document).ready(function(){
 	//	$('#content-about').append(data);
 	//});
 	$.ajax({
-		url: api_url + '/stats?totalRecords=1',
+		url: api_url + '/stats?totalRecords=1&lastUpdated=1',
 		method: "GET",
 		dataType: "json",
 		crossDomain: "true",
 		success: function(data){
 			numRecordsAll = data.results.totalRecords;
-			getApiStatus(numRecordsAll);
+			lastUpdated = data.results.lastUpdated;
+			getApiStatus(numRecordsAll, lastUpdated, 'OK');
 		}
+	})
+	.fail(function(){
+		getApiStatus(0, 'unknown', 'ERROR');
 	});
 });
 
@@ -304,12 +309,11 @@ function getPhyloPics() {
 // ======================================== Get API status - Home page
 // ====================================================================
 
-function getApiStatus(numRecordsAll) {
-	var status = "OK";
+function getApiStatus(numRecordsAll, updated, status) {
 	$("#status_APIstatus").text(status).hide().fadeIn();
-
-	var now = moment(new Date()).format("M/D/YYYY @ hh:MM a");
-	$("#status_date").text(now).hide().fadeIn();
+	var tempDate = new Date(updated);
+	var lastUpdate = moment(tempDate).format("M/D/YYYY @ hh:MM a");
+	$("#status_date").text(lastUpdate).hide().fadeIn();
 
 	var options = {  
 		useEasing: true,

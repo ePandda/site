@@ -110,6 +110,19 @@ section p{
 .formTabs a:hover, .formTabs a.highlight{
 	background-color:#8bc53f;
 }
+
+.endpointHeader {
+	border-bottom: 1px solid #dedede;
+	padding: 10px 0;
+	background-color: #fff;
+	color: #000;
+}
+
+.activeSearch{
+	background-color: #8bc53f;
+}
+
+
 #apiFormContainer{
 	border:2px solid #dedede;
 	padding:15px;
@@ -120,7 +133,7 @@ section p{
 	margin-bottom:25px;
 }
 
-#searchCollapse{
+.searchCollapse{
 	border: none;
 	background: none;
 	float: right;
