@@ -49,16 +49,17 @@ function renderForm(endpoint, container){
 			for (var i = 0; i < data.params.length; i++) {
 				var elementInfo = data.params[i];
 				if(elementInfo.display == false){ continue; }
-				var formElement = "<div class='form-group'><div class='form-bottom'><label><b>" + elementInfo.label + "</b><br/><small>" + elementInfo.description + "</small></label>\n";
+				var formElement = "<div class='row form-group'><div class='col-12'><label><h4>" + elementInfo.label + "</h4></label>";
+				formElement += "<small>" + elementInfo.description + "</small></div>"
 				switch(elementInfo.type) {
 					case "text":
-						formElement += "<div><input type='text' name='" + elementInfo.name + "' class='form-element'></div>";
+						formElement += "<div class='col-12'><input type='text' name='" + elementInfo.name + "' class='field'></div>";
 						break;
 					case "boolean":
-						formElement += "<div><input type='checkbox' name='" + elementInfo.name + "' class='form-element epanddaCheckbox' value='true'></div>";
+						formElement += "<div class='col-12'><input type='checkbox' name='" + elementInfo.name + "' class='epanddaCheckbox' value='true'></div>";
 						break;
 					case "integer":
-						formElement += "<div><input type='number' name='" + elementInfo.name + "' class='form-element' value='true'></div>";
+						formElement += "<div class='col-12'><input type='number' name='" + elementInfo.name + "' class='field' value='true'></div>";
 						break;
 					default:
 						break;
