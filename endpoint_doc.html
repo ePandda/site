@@ -1,42 +1,96 @@
 
 <section id="documentation-endpoint" class="container-full">
 <div class="row">
-	<div class="col-12-s">
-		<h1>Endpoints</h1>
-		<p>
-			The ePandda public API supports HTTP GET search requests for the following endpoints: Publications, Occurrences and Geonames.
-		</p>
-		<p>
-			The API is a RESTful web service that delivers data as JSON documents. All GET requests must be URL-encoded.
-		</p>
+	<div id="endpoint-header" class="col-12">
+		<h2>ENDPOINTS</h2>
 	</div>
 </div>
-	 
+ 
 <div class="row">
-	<div class="col-12-s">
-		<h2>lithostratigraphy</h2>
-		<p>Returns specimens matching lithostratigraphic units</p>
+	<div class="col-12">
+		<h2>Create Annotations</h2>
+		<p>Endpoint: <a href="api.epandda.org/annotations/create" target="_blank">api.epandda.org/annotations/create</a><br/>
+		Human created Annotations endpoint (ORCID verified )</p>
 			 
 		<table class="parameterTable">
 			<tr>
 				<th>Name</th>
+				<th>Label</th>
 				<th>Type</th>
 				<th>Required?</th>
 				<th>Description</th>
 			</tr>
 			 
 			<tr>
-				<td>lithostratigraphy</td>
+				<td>orcid</td>
+				<td>ORCID</td>
 				<td>text</td>
 				<td>False</td>
-				<td>Search on the full lithostratigraphic hierarchy </td>
+				<td>The unique identifier assigned by https://orcid.org/</td>
 			</tr>
 					 
 			<tr>
-				<td>rank</td>
+				<td>email</td>
+				<td>Email Address</td>
 				<td>text</td>
 				<td>False</td>
-				<td>Limit your search to a lithostratigraphic rank. Accepted values are: Bed, Member, Formation & Group</td>
+				<td>Email address associated with ORCID account</td>
+			</tr>
+					 
+			<tr>
+				<td>annotation_tye</td>
+				<td>Annotation Type</td>
+				<td>text</td>
+				<td>False</td>
+				<td>Match, Missing Data, Data Correction flag</td>
+			</tr>
+					 
+			<tr>
+				<td>target_url</td>
+				<td>Annotation Target URL</td>
+				<td>text</td>
+				<td>False</td>
+				<td>The URL for the target of the annotation ( specimen URL from iDigBio )</td>
+			</tr>
+					 
+			<tr>
+				<td>body_url</td>
+				<td>Annotation Body URL</td>
+				<td>text</td>
+				<td>False</td>
+				<td>The URL for the body of the annotation ( publication URL from PBDB )</td>
+			</tr>
+					 
+			<tr>
+				<td>body_title</td>
+				<td>Annotation Body Title</td>
+				<td>text</td>
+				<td>False</td>
+				<td>The Title of the annotation Body ( article title from PBDB )</td>
+			</tr>
+					 
+			<tr>
+				<td>body_doi</td>
+				<td>Annotation Body DOI</td>
+				<td>text</td>
+				<td>False</td>
+				<td>The DOI of the annotation Body</td>
+			</tr>
+					 
+			<tr>
+				<td>missing_data</td>
+				<td>Missing Data</td>
+				<td>text</td>
+				<td>False</td>
+				<td>List of key value pairs of missing data</td>
+			</tr>
+					 
+			<tr>
+				<td>data_correction</td>
+				<td>Data Correction</td>
+				<td>text</td>
+				<td>False</td>
+				<td>List of key value pairs with description of why data correction fixes issue</td>
 			</tr>
 					 
 		</table>
@@ -44,72 +98,192 @@
 </div>
 			 
 <div class="row">
-	<div class="col-12-s">
-		<h2>publications</h2>
-		<p>Returns specimen and publication records for a given scientific name. Results may be filtered using the available parameters.</p>
+	<div class="col-12">
+		<h2>Full Result Response</h2>
+		<p>Endpoint: <a href="api.epandda.org/full_match_results" target="_blank">api.epandda.org/full_match_results</a><br/>
+		Returns full data sets for matching criteria returned from the main Occurrence endpoint</p>
 			 
 		<table class="parameterTable">
 			<tr>
 				<th>Name</th>
+				<th>Label</th>
 				<th>Type</th>
 				<th>Required?</th>
 				<th>Description</th>
 			</tr>
 			 
 			<tr>
-				<td>scientific_name</td>
+				<td>sourceQuery</td>
+				<td>Source Query</td>
 				<td>text</td>
 				<td>False</td>
-				<td>Taxon to search occurrence records for</td>
+				<td>The query to the source collection as a JSON string</td>
 			</tr>
 					 
 			<tr>
-				<td>journal</td>
+				<td>matchQuery</td>
+				<td>Match Query</td>
 				<td>text</td>
 				<td>False</td>
-				<td>Then name of academic Journal a publication would be found</td>
+				<td>The query to the matched collection as a JSON string</td>
+			</tr>
+					 
+		</table>
+	</div>
+</div>
+			 
+<div class="row">
+	<div class="col-12">
+		<h2>Publications Index</h2>
+		<p>Endpoint: <a href="api.epandda.org/es_publications" target="_blank">api.epandda.org/es_publications</a><br/>
+		Searches PBDB and iDigBio for publication <=> specimen matches and returns match groups based on taxonomy, bibliograhy and locality</p>
+			 
+		<table class="parameterTable">
+			<tr>
+				<th>Name</th>
+				<th>Label</th>
+				<th>Type</th>
+				<th>Required?</th>
+				<th>Description</th>
+			</tr>
+			 
+			<tr>
+				<td>terms</td>
+				<td>Search terms</td>
+				<td>text</td>
+				<td>False</td>
+				<td>Search field and term pairs. Formatted in a pipe delimited list with field and term separated by a colon. For example: genus:hadrosaurus|country:united states</td>
 			</tr>
 					 
 			<tr>
-				<td>article</td>
+				<td>matchOn</td>
+				<td>Match on</td>
 				<td>text</td>
 				<td>False</td>
-				<td>The name of the journal article the given scientific_name appears in</td>
+				<td>By default this matches records based on locality, taxonomy and chronostratigraphy. Set this parameter to skip matching on one of these fields</td>
 			</tr>
 					 
 			<tr>
-				<td>author</td>
+				<td>chronoMatchLevel</td>
+				<td>Chronostratigraphy match leve</td>
 				<td>text</td>
 				<td>False</td>
-				<td>The name of the author who's article describes the given scientific_name</td>
+				<td>The geologic time unit to use in matching records. Allowed values: age|epoch|period|era</td>
 			</tr>
 					 
 			<tr>
-				<td>stateProvinceName</td>
+				<td>taxonMatchLevel</td>
+				<td>Taxonomy match level</td>
 				<td>text</td>
 				<td>False</td>
-				<td>The state/province to search for scientific_name and publication references</td>
+				<td>The taxonomic rank to use in matching records. Allowed values: scientificName|genus|family|order|class|phylum|kingdom</td>
 			</tr>
 					 
 			<tr>
-				<td>county</td>
+				<td>localityMatchLevel</td>
+				<td>Locality match level</td>
 				<td>text</td>
 				<td>False</td>
-				<td>The county to search for scientific_name and publication references</td>
+				<td>The geographic unit to use in matching records. Allowed values: geopoint|locality|county|state|country</td>
 			</tr>
 					 
 			<tr>
-				<td>locality</td>
+				<td>searchFrom</td>
+				<td>Last returned record to search from</td>
 				<td>text</td>
 				<td>False</td>
-				<td>The locality name to search for scientific_name occurences and publication references</td>
+				<td>This implements paging in a more effecient way in ElasticSearch. It should be provided the last return search result in order to request a subsequent page of search results</td>
+			</tr>
+					 
+		</table>
+	</div>
+</div>
+			 
+<div class="row">
+	<div class="col-12">
+		<h2>Occurrence Index</h2>
+		<p>Endpoint: <a href="api.epandda.org/es_occurrences" target="_blank">api.epandda.org/es_occurrences</a><br/>
+		Searches PBDB and iDigBio for occurrences and returns match groups based on taxonomy, chronostratigraphy and locality</p>
+			 
+		<table class="parameterTable">
+			<tr>
+				<th>Name</th>
+				<th>Label</th>
+				<th>Type</th>
+				<th>Required?</th>
+				<th>Description</th>
+			</tr>
+			 
+			<tr>
+				<td>terms</td>
+				<td>Search terms</td>
+				<td>text</td>
+				<td>False</td>
+				<td>Search field and term pairs. Formatted in a pipe delimited list with field and term separated by a colon. For example: genus:hadrosaurus|country:united states</td>
 			</tr>
 					 
 			<tr>
-				<td>includeAnnotations</td>
+				<td>matchOn</td>
+				<td>Match on</td>
+				<td>text</td>
+				<td>False</td>
+				<td>By default this matches records based on locality, taxonomy and chronostratigraphy. Set this parameter to skip matching on one of these fields</td>
+			</tr>
+					 
+			<tr>
+				<td>chronoMatchLevel</td>
+				<td>Chronostratigraphy match level</td>
+				<td>text</td>
+				<td>False</td>
+				<td>The geologic time unit to use in matching records. Allowed values: age|epoch|period|era</td>
+			</tr>
+					 
+			<tr>
+				<td>taxonMatchLevel</td>
+				<td>Taxonomy match level</td>
+				<td>text</td>
+				<td>False</td>
+				<td>The taxonomic rank to use in matching records. Allowed values: scientificName|genus|family|order|class|phylum|kingdom</td>
+			</tr>
+					 
+			<tr>
+				<td>localityMatchLevel</td>
+				<td>Locality match level</td>
+				<td>text</td>
+				<td>False</td>
+				<td>The geographic unit to use in matching records. Allowed values: geopoint|locality|county|state|country</td>
+			</tr>
+					 
+			<tr>
+				<td>geoPointFields</td>
+				<td>Search by georeference</td>
+				<td>text</td>
+				<td>False</td>
+				<td>Search records by georeference, either by distance from a point, within a bounding box or within a polygon</td>
+			</tr>
+					 
+			<tr>
+				<td>idigbioSearchFrom</td>
+				<td>iDigBio ;ast returned record to search from</td>
+				<td>text</td>
+				<td>False</td>
+				<td>This implements paging in a more effecient way in ElasticSearch. It should be provided the last return search result in order to request a subsequent page of search results</td>
+			</tr>
+					 
+			<tr>
+				<td>pbdbSearchFrom</td>
+				<td>PBDB last returned record to search from</td>
+				<td>text</td>
+				<td>False</td>
+				<td>This implements paging in a more effecient way in ElasticSearch. It should be provided the last return search result in order to request a subsequent page of search results</td>
+			</tr>
+					 
+			<tr>
+				<td>returnMedia</td>
+				<td>Return media from iDigBio</td>
 				<td>boolean</td>
 				<td>False</td>
-				<td>Toggles if OpenAnnotations section should be included or not</td>
+				<td>Toggle to return any matching media from iDigBio</td>
 			</tr>
 					 
 		</table>
@@ -117,110 +291,15 @@
 </div>
 			 
 <div class="row">
-	<div class="col-12-s">
-		<h2>stratigraphy</h2>
-		<p>Returns specimens matchting chronostratigraphic terms</p>
+	<div class="col-12">
+		<h2>Annotations</h2>
+		<p>Endpoint: <a href="api.epandda.org/annotations" target="_blank">api.epandda.org/annotations</a><br/>
+		Returns openAnnotations for linked data in ePANDDA.</p>
 			 
 		<table class="parameterTable">
 			<tr>
 				<th>Name</th>
-				<th>Type</th>
-				<th>Required?</th>
-				<th>Description</th>
-			</tr>
-			 
-			<tr>
-				<td>chronostratigraphy</td>
-				<td>text</td>
-				<td>False</td>
-				<td>Search for a single term in the chronostratigraphic hierarchy</td>
-			</tr>
-					 
-			<tr>
-				<td>stage</td>
-				<td>text</td>
-				<td>False</td>
-				<td>Search a single or range of age/stages. Can be formatted as 'age1-age2' or 'age1 to age2'</td>
-			</tr>
-					 
-			<tr>
-				<td>series</td>
-				<td>text</td>
-				<td>False</td>
-				<td>Search a single or range of series/epochs. Can be formatted as 'epoch1-epoch2' or 'epoch1 to epoch2'</td>
-			</tr>
-					 
-			<tr>
-				<td>system</td>
-				<td>text</td>
-				<td>False</td>
-				<td>Search a single or range of age/stages. Can be formatted as 'period1-period2' or 'period1 to period2'</td>
-			</tr>
-					 
-			<tr>
-				<td>erathem</td>
-				<td>text</td>
-				<td>False</td>
-				<td>Search a single or range of age/stages. Can be formatted as 'era1-era2' or 'era1 to era2'</td>
-			</tr>
-					 
-		</table>
-	</div>
-</div>
-			 
-<div class="row">
-	<div class="col-12-s">
-		<h2>occurrences</h2>
-		<p>Returns specimens collected from a given locality</p>
-			 
-		<table class="parameterTable">
-			<tr>
-				<th>Name</th>
-				<th>Type</th>
-				<th>Required?</th>
-				<th>Description</th>
-			</tr>
-			 
-			<tr>
-				<td>taxon_name</td>
-				<td>text</td>
-				<td>False</td>
-				<td>The taxa to search occurrences for</td>
-			</tr>
-					 
-			<tr>
-				<td>locality</td>
-				<td>text</td>
-				<td>False</td>
-				<td>The locality name to bound taxonomic occurences to</td>
-			</tr>
-					 
-			<tr>
-				<td>chronostratigraphy</td>
-				<td>text</td>
-				<td>False</td>
-				<td>The geologic time period to filter taxon occurrences by</td>
-			</tr>
-					 
-			<tr>
-				<td>lithostratigraphy</td>
-				<td>text</td>
-				<td>False</td>
-				<td>The lithostratigraphic unit to filter taxon occurrences by</td>
-			</tr>
-					 
-		</table>
-	</div>
-</div>
-			 
-<div class="row">
-	<div class="col-12-s">
-		<h2>annotations</h2>
-		<p>Returns openAnnotations for linked data in ePANDDA.</p>
-			 
-		<table class="parameterTable">
-			<tr>
-				<th>Name</th>
+				<th>Label</th>
 				<th>Type</th>
 				<th>Required?</th>
 				<th>Description</th>
@@ -228,6 +307,7 @@
 			 
 			<tr>
 				<td>annotationDate</td>
+				<td>Annotation Date</td>
 				<td>text</td>
 				<td>False</td>
 				<td>Filter annotation results by provided date ( simple date match ). Format annotationDate=YYYY-MM-DD</td>
@@ -235,6 +315,7 @@
 					 
 			<tr>
 				<td>annotationDateAfter</td>
+				<td>Annotation Date After</td>
 				<td>text</td>
 				<td>False</td>
 				<td>Filter annotation results equal to or after provided date. Format annotationDateAfter=YYYY-MM-DD</td>
@@ -242,89 +323,18 @@
 					 
 			<tr>
 				<td>annotationDateBefore</td>
+				<td>Annotation Date Before</td>
 				<td>text</td>
 				<td>False</td>
 				<td>Filter annotation results before provided date. Format annotationDateBefore=YYYY-MM-DD</td>
 			</tr>
 					 
-		</table>
-	</div>
-</div>
-			 
-<div class="row">
-	<div class="col-12-s">
-		<h2>geonames</h2>
-		<p>Returns specimens collected from a given locality</p>
-			 
-		<table class="parameterTable">
 			<tr>
-				<th>Name</th>
-				<th>Type</th>
-				<th>Required?</th>
-				<th>Description</th>
-			</tr>
-			 
-			<tr>
-				<td>geolocation</td>
+				<td>quality_score</td>
+				<td>Quality Score</td>
 				<td>text</td>
 				<td>False</td>
-				<td>A generic place name, will search across locality, county, state/province and country fields</td>
-			</tr>
-					 
-			<tr>
-				<td>countryName</td>
-				<td>text</td>
-				<td>False</td>
-				<td>Full country names</td>
-			</tr>
-					 
-			<tr>
-				<td>countryCode</td>
-				<td>text</td>
-				<td>False</td>
-				<td>2-letter country code, provided from geonames.org</td>
-			</tr>
-					 
-			<tr>
-				<td>stateProvinceName</td>
-				<td>text</td>
-				<td>False</td>
-				<td>State or province name. Do not include qualifiers (e.g. State, Province) to return better results</td>
-			</tr>
-					 
-			<tr>
-				<td>stateProvinceCode</td>
-				<td>text</td>
-				<td>False</td>
-				<td>State or province name. Do not include qualifiers (e.g. State, Province) to return better results</td>
-			</tr>
-					 
-			<tr>
-				<td>county</td>
-				<td>text</td>
-				<td>False</td>
-				<td>County name. Do not add "County" to your search string</td>
-			</tr>
-					 
-			<tr>
-				<td>locality</td>
-				<td>text</td>
-				<td>False</td>
-				<td>The specific locality where a specimen was recorded</td>
-			</tr>
-					 
-			<tr>
-				<td>geoPoint</td>
-				<td>text</td>
-				<td>False</td>
-				<td>The Latitude, Longitude to search on. Provide a comma separated string with no space (e.g. '-103.2,29.2').</td>
-			</tr>
-					 
-			<tr>
-				<td>geoRadius</td>
-				<td>text</td>
-				<td>False</td>
-				<td>The distance from the provided geoPoint to search within, in meters. Provide only the distance with no units</td>
+				<td>Filter annotation results equal to or greater than value</td>
 			</tr>
 					 
 		</table>
@@ -332,93 +342,42 @@
 </div>
 			 
 <div class="row">
-	<div class="col-12-s">
-		<h2>taxonomy</h2>
-		<p>Returns specimens matchting taxonomic terms</p>
+	<div class="col-12">
+		<h2>ePandda Bug Reports</h2>
+		<p>Endpoint: <a href="api.epandda.org/bug_report" target="_blank">api.epandda.org/bug_report</a><br/>
+		File Bug Reports Here</p>
 			 
 		<table class="parameterTable">
 			<tr>
 				<th>Name</th>
+				<th>Label</th>
 				<th>Type</th>
 				<th>Required?</th>
 				<th>Description</th>
 			</tr>
 			 
 			<tr>
-				<td>fullTaxonomy</td>
+				<td>email</td>
+				<td>Email</td>
 				<td>text</td>
 				<td>False</td>
-				<td>A search across all levels of of the taxonomic hierarchy</td>
+				<td>Your email address</td>
 			</tr>
 					 
 			<tr>
-				<td>genus</td>
+				<td>message</td>
+				<td>Message</td>
 				<td>text</td>
 				<td>False</td>
-				<td>Genus</td>
+				<td>Body of your message</td>
 			</tr>
 					 
 			<tr>
-				<td>species</td>
-				<td>text</td>
-				<td>False</td>
-				<td>The species (specific epithet) of the specimen</td>
-			</tr>
-					 
-			<tr>
-				<td>scientificName</td>
-				<td>text</td>
-				<td>False</td>
-				<td>A formatted scientific name, including or not including scientific name authorship and year</td>
-			</tr>
-					 
-			<tr>
-				<td>family</td>
-				<td>text</td>
-				<td>False</td>
-				<td>Taxonomic family</td>
-			</tr>
-					 
-			<tr>
-				<td>order</td>
-				<td>text</td>
-				<td>False</td>
-				<td>Taxonomic order</td>
-			</tr>
-					 
-			<tr>
-				<td>class</td>
-				<td>text</td>
-				<td>False</td>
-				<td>Taxonomic class</td>
-			</tr>
-					 
-			<tr>
-				<td>phylum</td>
-				<td>text</td>
-				<td>False</td>
-				<td>Taxonomic phylum</td>
-			</tr>
-					 
-			<tr>
-				<td>kingdom</td>
-				<td>text</td>
-				<td>False</td>
-				<td>Taxonomic kingdom</td>
-			</tr>
-					 
-			<tr>
-				<td>other</td>
-				<td>text</td>
-				<td>False</td>
-				<td>Other terms such as superFamily, 'above family' as well as a generic 'noRank' field</td>
-			</tr>
-					 
-			<tr>
-				<td>images</td>
+				<td>subject</td>
+				<td>Subject</td>
 				<td>boolean</td>
 				<td>False</td>
-				<td>Set to true to return images any images from iDigBio that match the search terms</td>
+				<td>The Subject of your message</td>
 			</tr>
 					 
 		</table>
@@ -426,13 +385,15 @@
 </div>
 			 
 <div class="row">
-	<div class="col-12-s">
-		<h2>stats</h2>
-		<p>Interesting API statistics</p>
+	<div class="col-12">
+		<h2>API statistics</h2>
+		<p>Endpoint: <a href="api.epandda.org/stats" target="_blank">api.epandda.org/stats</a><br/>
+		Interesting API statistics</p>
 			 
 		<table class="parameterTable">
 			<tr>
 				<th>Name</th>
+				<th>Label</th>
 				<th>Type</th>
 				<th>Required?</th>
 				<th>Description</th>
@@ -440,6 +401,7 @@
 			 
 			<tr>
 				<td>stateProvinces</td>
+				<td>States/Provinces</td>
 				<td>boolean</td>
 				<td>False</td>
 				<td>The number of unique states represented in the collections</td>
@@ -447,6 +409,7 @@
 					 
 			<tr>
 				<td>countries</td>
+				<td>Countries</td>
 				<td>boolean</td>
 				<td>False</td>
 				<td>The number of unique countries represented in the collections</td>
@@ -454,6 +417,7 @@
 					 
 			<tr>
 				<td>counties</td>
+				<td>Counties</td>
 				<td>boolean</td>
 				<td>False</td>
 				<td>The number of unique counties represented in the collections</td>
@@ -461,6 +425,7 @@
 					 
 			<tr>
 				<td>localities</td>
+				<td>Localities</td>
 				<td>boolean</td>
 				<td>False</td>
 				<td>The number of unique localities represented in the collections</td>
@@ -468,6 +433,7 @@
 					 
 			<tr>
 				<td>geoPoints</td>
+				<td>Geographic Coordinates</td>
 				<td>boolean</td>
 				<td>False</td>
 				<td>The number of unique geographic coordinates represented in the collections</td>
@@ -475,13 +441,23 @@
 					 
 			<tr>
 				<td>totalRecords</td>
+				<td>Total Records</td>
 				<td>boolean</td>
 				<td>False</td>
 				<td>The count of all specimen/occurrence records included in project from iDigBio and PBDB</td>
 			</tr>
 					 
 			<tr>
+				<td>lastUpdated</td>
+				<td>Last Updated</td>
+				<td>boolean</td>
+				<td>False</td>
+				<td>The last time an update was run to import new records from iDigBio or PBDB</td>
+			</tr>
+					 
+			<tr>
 				<td>taxonomies</td>
+				<td>Taxonomies</td>
 				<td>boolean</td>
 				<td>False</td>
 				<td>The number of unique taxonomic hierarchies represented in the collections</td>
@@ -492,4 +468,3 @@
 </div>
 			 
 </section>
-	

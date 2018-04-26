@@ -17,12 +17,15 @@ $.ajax({
 });
 
 $(document).ready(function(){
-	$.get('endpoint_doc.html', function(data){
+	$.get('documentation_2.html', function(data){
 		$('#content-documentation').text(data);
+		console.log("GOT OVERVIEW");
 	});
-	$.get('documentation.html', function(data){
+	$.get('endpoint_doc.html', function(data){
 		$('#content-documentation2').text(data);
+		console.log("GOT ENDPOINTS");
 	});
+
 	$.get('examples.html', function(data){
 		$('#content-examples').text(data);
 	});
