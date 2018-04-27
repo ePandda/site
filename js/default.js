@@ -19,11 +19,9 @@ $.ajax({
 $(document).ready(function(){
 	$.get('documentation_2.html', function(data){
 		$('#content-documentation').text(data);
-		console.log("GOT OVERVIEW");
 	});
 	$.get('endpoint_doc.html', function(data){
 		$('#content-documentation2').text(data);
-		console.log("GOT ENDPOINTS");
 	});
 
 	$.get('examples.html', function(data){
@@ -350,28 +348,12 @@ function setHomePageStats() {
 			var totalRecords = data.results.totalRecords;
 			var totalRecordsCount = new CountUp("nowSearching_count", 0, totalRecords, 0, 1.5, countUpOptions);
 			totalRecordsCount.start();
-		}
-	});
-	$.ajax({
-		url: api_url + '/stats?taxonomies=1',
-		method: "GET",
-		dataType: "json",
-		crossDomain: "true",
-		success: function(data){
-			var taxonomyRecords = data.results.taxonomies;
-			var taxonomyRecordsCount = new CountUp("nowSearching_taxonomies", 0, taxonomyRecords, 0, 1.5, countUpOptions);
-			taxonomyRecordsCount.start();
-		}
-	});
-	$.ajax({
-		url: api_url + '/stats?localities=1',
-		method: "GET",
-		dataType: "json",
-		crossDomain: "true",
-		success: function(data){
-			var localityRecords = data.results.localities;
-			var localityRecordsCount = new CountUp("nowSearching_localities", 0, localityRecords, 0, 1.5, countUpOptions);
-			localityRecordsCount.start();
+			var pbdbRecords = data.results.occurrences;
+			var pbdbRecordsCount = new CountUp("nowSearching_pbdb", 0, pbdbRecords, 0, 1.5, countUpOptions);
+			pbdbRecordsCount.start();
+			var idbRecords = data.results.specimens;
+			var idbRecordsCount = new CountUp("nowSearching_idb", 0, idbRecords, 0, 1.5, countUpOptions);
+			idbRecordsCount.start();
 		}
 	});
 }
