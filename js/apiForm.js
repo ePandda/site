@@ -21,12 +21,12 @@ function renderEndpoints(endpointContainer, formContainer){
 				var optionInfo = data.routes[i];
 				var endpoint = optionInfo.url.replace("/", "");
 				var endpointRow = '';
-				if(endpoint && (endpoint == "es_occurrences" || endpoint == "es_publications")){
+				if(endpoint && (endpoint == "occurrences" || endpoint == "publications")){
 				    endpointRow += '<div id="endpointRow_' + endpoint + '" class="row endpointHeader"><div class="col-12 col-3-m"><H2>' + optionInfo.name + '</H2></div>';
 				    endpointRow += '<div class="col-9 col-7-m col-8-xl"><p>' + optionInfo.description + '</p></div>';
 				    endpointRow += '<div class="col-3 col-2-m col-1-xl"><h3><button type="button" class="searchCollapse" id="searchCollapse_' + endpoint + '" onClick="toggleForm(\'' + endpoint + '\', \'#apiForm\');">[ &mdash; ]</button></h3></div></div>';
 					$(endpointContainer).append(endpointRow);
-					if(endpoint == "es_occurrences"){
+					if(endpoint == "occurrences"){
 						renderForm(endpoint, formContainer);
 						$('#endpointRow_' + endpoint).addClass('activeSearch');
 					} else {
@@ -91,11 +91,9 @@ function toggleForm(endpoint, formID){
 		})
 	} else {
 		if($(formID).is(":visible")){
-			console.log("HIDING ENDPOINT");
 			$('#searchCollapse_' + endpoint).html('[ + ]');
 			$('#endpointRow_' + endpoint).removeClass('activeSearch');
 		} else {
-			console.log("SHOWING ENDPOINT");
 			$('#searchCollapse_' + endpoint).html('[ &mdash; ]');
 			$('#endpointRow_' + endpoint).addClass('activeSearch');
 		}
@@ -124,11 +122,11 @@ function processForm(formData, resultContainer, limit, page, idigbioSearchAfter,
 				apiParams += "&geoRadius=1000";
 			}
 		}
-		if(idigbioSearchAfter){
-			apiParams+= '&idigbioSearchFrom=' + idigbioSearchAfter;
+		if(idigbioSearchAfter && idigbioSearchAfter != 'none'){
+			apiParams+= '&idigbioSearchAfter=[' + idigbioSearchAfter + ']';
 		}
-		if(pbdbSearchAfter){
-			apiParams+= '&pbdbSearchFrom=' + pbdbSearchAfter;
+		if(pbdbSearchAfter && pbdbSearchAfter != 'none'){
+			apiParams+= '&pbdbSearchAfter=[' + pbdbSearchAfter + ']';
 		}
 		if(limit){
 			apiParams+= '&limit='+limit;
@@ -184,9 +182,18 @@ function processForm(formData, resultContainer, limit, page, idigbioSearchAfter,
 						pbdbNext += data.queryInfo.pbdbTotal
 					}
 				}
+				var idb_more = '\'none\'';
+				var pbdb_more = '\'none\'';
+				if(data.queryInfo.idigbioTotal > idbPageStart){
+					idb_more = data.idigbio_search_after;
+				}
+				if(data.queryInfo.pbdbTotal > pbdbPageStart){
+					pbdb_more = data.pbdb_search_after
+				}
+
 				if(pbdbNext || idbNext){
 					var buttonText = "Load " + idbNext + ' ' + pbdbNext;
-					$('#apiLoadAdditionalResult').html('<button class="button" id="appendMore" onClick="processForm($(\'#apiForm\').serializeArray(), \'#apiResultsContainer\', 25, '+nextPage+', '+data.idigbio_search_after+', '+data.pbdb_search_after+', true);">' + buttonText + '</button>');
+					$('#apiLoadAdditionalResult').html('<button class="button" id="appendMore" onClick="processForm($(\'#apiForm\').serializeArray(), \'#apiResultsContainer\', 25, '+nextPage+', '+idb_more+', '+pbdb_more+', true);">' + buttonText + '</button>');
 				} else {
 					$('#apiLoadAdditionalResult').html('');
 				}
@@ -257,7 +264,7 @@ function returnUIResults(data){
 		listHTML += '</div></div><div class="row"><div class="col-6"><h5>' + match.sourceType + ' Sources</h5><div id="'+key+'Sources">';
 		if(match.sources.length > 0){
 			match.sources.forEach(function(src){
-				listHTML += '<div class="row">';
+				listHTML += '<div id="' + src['url'] + '"class="row src_rcrd">';
 				if(match.sourceType == 'idigbio'){
 					listHTML += '<div class="col-6">';
 					if(src['idigbio:hasImage'] == 'true'){
@@ -340,11 +347,17 @@ function appendUIResults(data){
 	for(var key in data.results){
 		var match = data.results[key]
 		if(matchList.indexOf(key) > -1){
+			var srcList = []
+			$('#' + key + 'Sources').children('.src_rcrd').each(function(src_chk){
+				var srcID = $(this).attr('id');
+				srcList.push(srcID);
+			})
 			var sourceText = $('#'+key+'Sources').html();
 			if(match.sources.length > 0){
 				match.sources.forEach(function(src){
 					var newRow = '';
-					newRow += '<div class="row">';
+					if(srcList.indexOf(src['url']) > -1){ return; }
+					newRow += '<div id="' + src['url'] + '"class="row src_rcrd">';
 					if(match.sourceType == 'idigbio'){
 						newRow += '<div class="col-6">';
 						if(src['idigbio:hasImage'] == 'true'){
@@ -387,7 +400,7 @@ function appendUIResults(data){
 			newGroup += '</div></div><div class="row"><div class="col-6"><h5>' + match.sourceType + ' Sources</h5>';
 			if(match.sources.length > 0){
 				match.sources.forEach(function(src){
-					newGroup += '<div class="row">';
+					newGroup += '<div id="' + src['url'] + '"class="row src_rcrd">';
 					if(match.sourceType == 'idigbio'){
 						newGroup += '<div class="col-6">';
 						if(src['idigbio:hasImage'] == 'true'){
