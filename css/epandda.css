@@ -114,6 +114,10 @@ table tbody th{
 	border: 6px solid #ebebeb;
 }
 
+.metadataFieldHeader {
+	padding-top: 1.2em;
+}
+
 /* ==================================================== */
 /* form		                                            */
 /* ==================================================== */

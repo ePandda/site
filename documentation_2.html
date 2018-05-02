@@ -5,7 +5,7 @@
 				<h1>ePANDDA API Documentation</h1>
 			</div>
 			<div id="docNav" class="col-8-m">
-				<h4><a href="#" onclick="$(window).scrollTop($('#overview').offset().top-40); return false">Overview</a> | <a href="#" onclick="$(window).scrollTop($('#endpoint-header').offset().top-50); return false">Endpoints</a> </h4>
+				<h4><a href="#" onclick="$(window).scrollTop($('#overview').offset().top-40); return false">Overview</a> | <a href="#" onclick="$(window).scrollTop($('#endpoint-header').offset().top-50); return false">Endpoints</a> | <a href="#" onclick="$(window).scrollTop($('#field-header').offset().top-50); return false">Metadata Fields</a> </h4>
 			</div>
 		</div>
 	</div>
@@ -43,7 +43,7 @@
 				<li><strong>Paleo georeferences (Optional)</strong><br/>
 				PBDB includes a paleo georeference point in addition to a modern coordinate pair. To query on this field set the third option to “paleo”, this will disable the search on iDigBio and only query PBDB for records matching that paleo coordinate.</li>
 			</ol>
-			
+
 			<p>
 			    Searching for genus Ostrea within 5km of a point:
 			    <pre>https://api.epandda.org/es_occurrences?terms=genus:ostrea&geoPointFields=29.67,-83.388|5</pre>
@@ -263,37 +263,37 @@
 	"totalMatches": 7
 }
 			</pre>
-			
+
 			<h4>Other values</h4>
 			<p>The results response may include two additional values, <em>idigbio_search_after</em> and <em>pbdb_search_after</em>. These values are used for paging of large result sets and are described in detail below.</p>
 
 			<h3>Returning Further Results</h3>
 			<p>By default the API will return only the first 100 results when a query returns many matches. Additional results can be obtained using paging or by forcing the full result set to be returned:</p>
-			
+
 			<h4>Return the next page of results</h4>
 <p>
     Contained within each <em>occurrences</em> endpoint response are the keys <em>idigbio_search_after</em> and <em>idigbio_search_after</em>. Note that if your result set contains only matches from PBDB or iDigBio one of these keys will be omitted.
 </p>
 <pre>
 {
-    "idigbio_search_after": "[8.481807, 212235]", 
-    "pbdb_search_after": "[6.7852087, 155715]", 
+    "idigbio_search_after": "[8.481807, 212235]",
+    "pbdb_search_after": "[6.7852087, 155715]",
     "queryInfo": {
-        "idigbioTotal": 21520, 
+        "idigbioTotal": 21520,
         ...
         "pbdbTotal": 2521
-    }, 
+    },
     "results": {
         ...
     }
 }
 </pre>
-			<p>Additional pages of results may be returned by appending the <em>idigbioSearchFrom</em> and/or <em>pbdbSearchFrom</em> parameters to your request. Set these parameters to the corresponding values in <em>idigbio_search_after</em> and/or <em>pbdb_search_after</em> and the endpoint will return the next page of results. This process may be repeated to obtain all pages of a result set.</p> 
-						
+			<p>Additional pages of results may be returned by appending the <em>idigbioSearchFrom</em> and/or <em>pbdbSearchFrom</em> parameters to your request. Set these parameters to the corresponding values in <em>idigbio_search_after</em> and/or <em>pbdb_search_after</em> and the endpoint will return the next page of results. This process may be repeated to obtain all pages of a result set.</p>
+
 	<pre>https://api.epandda.org/es_occurrences?terms=genus:hadrosaurus&idigbioSearchAfter="[13.647958, 5933488]"</pre>
-		
+
 			<h4>Return all matches/sources</h4>
-			<p>The <em>full_match_results</em> API endpoint can be used to return all records in both PBDB and iDigBio that match your query criteria. The endpoint takes a serialized <a href=="https://elasticsearch-dsl.readthedocs.io/en/latest/">ElasticSearch query DSL</a> JSON object. You can obtain the JSON query DSL objects for your API query in the API response. There will be two, for the match query (in the <em>fullMatchQuery</em>) and the source query (in <em>fullSourceQuery</em>). Pass either to the endpoint as follows:</p>	
+			<p>The <em>full_match_results</em> API endpoint can be used to return all records in both PBDB and iDigBio that match your query criteria. The endpoint takes a serialized <a href=="https://elasticsearch-dsl.readthedocs.io/en/latest/">ElasticSearch query DSL</a> JSON object. You can obtain the JSON query DSL objects for your API query in the API response. There will be two, for the match query (in the <em>fullMatchQuery</em>) and the source query (in <em>fullSourceQuery</em>). Pass either to the endpoint as follows:</p>
 			<pre>https://api.epandda.org/full_match_results?matchQuery=“{\"query\": {\"bool\": {\"should\": [{\"terms\": {\"dwc:earliestPeriodOrLowestSystem\": [\"cretaceous\"]}}, {\"terms\": {\"dwc:latestPeriodOrHighestSystem\": [\"cretaceous\"]}}], \"must\": [{\"match\": {\"dwc:county\": \"Bladen\"}}, {\"match\": {\"dwc:genus\": \"Hadrosaurus\"}}]}}, \"size\": 7}”</pre>
 
 		</div>

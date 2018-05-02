@@ -135,7 +135,7 @@
 <div class="row">
 	<div class="col-12">
 		<h2>Publications Index</h2>
-		<p>Endpoint: <a href="api.epandda.org/es_publications" target="_blank">api.epandda.org/es_publications</a><br/>
+		<p>Endpoint: <a href="api.epandda.org/publications" target="_blank">api.epandda.org/publications</a><br/>
 		Searches PBDB and iDigBio for publication <=> specimen matches and returns match groups based on taxonomy, bibliograhy and locality</p>
 			 
 		<table class="parameterTable">
@@ -188,8 +188,16 @@
 			</tr>
 					 
 			<tr>
-				<td>searchFrom</td>
-				<td>Last returned record to search from</td>
+				<td>idigbioSearchAfter</td>
+				<td>iDigBio ;ast returned record to search from</td>
+				<td>text</td>
+				<td>False</td>
+				<td>This implements paging in a more effecient way in ElasticSearch. It should be provided the last return search result in order to request a subsequent page of search results</td>
+			</tr>
+					 
+			<tr>
+				<td>pbdbSearchAfter</td>
+				<td>PBDB last returned record to search from</td>
 				<td>text</td>
 				<td>False</td>
 				<td>This implements paging in a more effecient way in ElasticSearch. It should be provided the last return search result in order to request a subsequent page of search results</td>
@@ -201,8 +209,59 @@
 			 
 <div class="row">
 	<div class="col-12">
+		<h2>Annotations</h2>
+		<p>Endpoint: <a href="api.epandda.org/annotations" target="_blank">api.epandda.org/annotations</a><br/>
+		Returns openAnnotations for linked data in ePANDDA.</p>
+			 
+		<table class="parameterTable">
+			<tr>
+				<th>Name</th>
+				<th>Label</th>
+				<th>Type</th>
+				<th>Required?</th>
+				<th>Description</th>
+			</tr>
+			 
+			<tr>
+				<td>annotationDate</td>
+				<td>Annotation Date</td>
+				<td>text</td>
+				<td>False</td>
+				<td>Filter annotation results by provided date ( simple date match ). Format annotationDate=YYYY-MM-DD</td>
+			</tr>
+					 
+			<tr>
+				<td>annotationDateAfter</td>
+				<td>Annotation Date After</td>
+				<td>text</td>
+				<td>False</td>
+				<td>Filter annotation results equal to or after provided date. Format annotationDateAfter=YYYY-MM-DD</td>
+			</tr>
+					 
+			<tr>
+				<td>annotationDateBefore</td>
+				<td>Annotation Date Before</td>
+				<td>text</td>
+				<td>False</td>
+				<td>Filter annotation results before provided date. Format annotationDateBefore=YYYY-MM-DD</td>
+			</tr>
+					 
+			<tr>
+				<td>quality_score</td>
+				<td>Quality Score</td>
+				<td>text</td>
+				<td>False</td>
+				<td>Filter annotation results equal to or greater than value</td>
+			</tr>
+					 
+		</table>
+	</div>
+</div>
+			 
+<div class="row">
+	<div class="col-12">
 		<h2>Occurrence Index</h2>
-		<p>Endpoint: <a href="api.epandda.org/es_occurrences" target="_blank">api.epandda.org/es_occurrences</a><br/>
+		<p>Endpoint: <a href="api.epandda.org/occurrences" target="_blank">api.epandda.org/occurrences</a><br/>
 		Searches PBDB and iDigBio for occurrences and returns match groups based on taxonomy, chronostratigraphy and locality</p>
 			 
 		<table class="parameterTable">
@@ -263,7 +322,7 @@
 			</tr>
 					 
 			<tr>
-				<td>idigbioSearchFrom</td>
+				<td>idigbioSearchAfter</td>
 				<td>iDigBio ;ast returned record to search from</td>
 				<td>text</td>
 				<td>False</td>
@@ -271,7 +330,7 @@
 			</tr>
 					 
 			<tr>
-				<td>pbdbSearchFrom</td>
+				<td>pbdbSearchAfter</td>
 				<td>PBDB last returned record to search from</td>
 				<td>text</td>
 				<td>False</td>
@@ -284,57 +343,6 @@
 				<td>boolean</td>
 				<td>False</td>
 				<td>Toggle to return any matching media from iDigBio</td>
-			</tr>
-					 
-		</table>
-	</div>
-</div>
-			 
-<div class="row">
-	<div class="col-12">
-		<h2>Annotations</h2>
-		<p>Endpoint: <a href="api.epandda.org/annotations" target="_blank">api.epandda.org/annotations</a><br/>
-		Returns openAnnotations for linked data in ePANDDA.</p>
-			 
-		<table class="parameterTable">
-			<tr>
-				<th>Name</th>
-				<th>Label</th>
-				<th>Type</th>
-				<th>Required?</th>
-				<th>Description</th>
-			</tr>
-			 
-			<tr>
-				<td>annotationDate</td>
-				<td>Annotation Date</td>
-				<td>text</td>
-				<td>False</td>
-				<td>Filter annotation results by provided date ( simple date match ). Format annotationDate=YYYY-MM-DD</td>
-			</tr>
-					 
-			<tr>
-				<td>annotationDateAfter</td>
-				<td>Annotation Date After</td>
-				<td>text</td>
-				<td>False</td>
-				<td>Filter annotation results equal to or after provided date. Format annotationDateAfter=YYYY-MM-DD</td>
-			</tr>
-					 
-			<tr>
-				<td>annotationDateBefore</td>
-				<td>Annotation Date Before</td>
-				<td>text</td>
-				<td>False</td>
-				<td>Filter annotation results before provided date. Format annotationDateBefore=YYYY-MM-DD</td>
-			</tr>
-					 
-			<tr>
-				<td>quality_score</td>
-				<td>Quality Score</td>
-				<td>text</td>
-				<td>False</td>
-				<td>Filter annotation results equal to or greater than value</td>
 			</tr>
 					 
 		</table>
@@ -467,4 +475,28 @@
 	</div>
 </div>
 			 
+<div class="row">
+	<div id="field-header" class="col-12">
+		<h2>Metadata Fields</h2>
+	</div>
+</div>
+ 
+			<div class="row">
+				<div class="col-12">
+					<h3 class="metadataFieldHeader">IDIGBIO</h3>
+					<table class="parameterTable">
+		<tr><td>@timestamp</td><td>@version</td><td>coreid</td><td>dwc:basisOfRecord</td></tr> <tr><td>dwc:bed</td><td>dwc:catalogNumber</td><td>dwc:class</td><td>dwc:collectionCode</td></tr> <tr><td>dwc:collectionID</td><td>dwc:continent</td><td>dwc:coordinateUncertaintyInMeters</td><td>dwc:country</td></tr> <tr><td>dwc:county</td><td>dwc:earliestAgeOrLowestStage</td><td>dwc:earliestEonOrLowestEonothem</td><td>dwc:earliestEpochOrLowestSeries</td></tr> <tr><td>dwc:earliestEraOrLowestErathem</td><td>dwc:earliestPeriodOrLowestSystem</td><td>dwc:eventDateEarly</td><td>dwc:eventDateLate</td></tr> <tr><td>dwc:family</td><td>dwc:fieldNumber</td><td>dwc:formation</td><td>dwc:genus</td></tr> <tr><td>dwc:geologicalContextID</td><td>dwc:group</td><td>dwc:higherClassification</td><td>dwc:highestBiostratigraphicZone</td></tr> <tr><td>dwc:individualCount</td><td>dwc:infraspecificEpithet</td><td>dwc:institutionCode</td><td>dwc:institutionID</td></tr> <tr><td>dwc:kingdom</td><td>dwc:latestAgeOrHighestStage</td><td>dwc:latestEonOrHighestEonothem</td><td>dwc:latestEpochOrHighestSeries</td></tr> <tr><td>dwc:latestEraOrHighestErathem</td><td>dwc:latestPeriodOrHighestSystem</td><td>dwc:lithostratigraphicTerms</td><td>dwc:locality</td></tr> <tr><td>dwc:lowestBiostratigraphicZone</td><td>dwc:maximumDepthInMeters</td><td>dwc:maximumElevationInMeters</td><td>dwc:member</td></tr> <tr><td>dwc:minimumDepthInMeters</td><td>dwc:minimumElevationInMeters</td><td>dwc:municipality</td><td>dwc:occurrenceID</td></tr> <tr><td>dwc:order</td><td>dwc:phylum</td><td>dwc:recordNumber</td><td>dwc:recordedBy</td></tr> <tr><td>dwc:scientificName</td><td>dwc:specificEpithet</td><td>dwc:startDayOfYear</td><td>dwc:stateProvince</td></tr> <tr><td>dwc:taxonID</td><td>dwc:taxonRank</td><td>dwc:taxonomicStatus</td><td>dwc:typeStatus</td></tr> <tr><td>dwc:verbatimEventDate</td><td>dwc:verbatimLocality</td><td>dwc:vernacularName</td><td>dwc:waterBody</td></tr> <tr><td>gbif:canonicalName</td><td>host</td><td>idigbio:associatedsequences</td><td>idigbio:barcodeValue</td></tr> <tr><td>idigbio:collectionName</td><td>idigbio:commonnames</td><td>idigbio:dataQualityScore</td><td>idigbio:dateModified</td></tr> <tr><td>idigbio:etag</td><td>idigbio:eventDate</td><td>idigbio:flags</td><td>idigbio:geoPoint</td></tr> <tr><td>idigbio:hasImage</td><td>idigbio:hasMedia</td><td>idigbio:institutionName</td><td>idigbio:isoCountryCode</td></tr> <tr><td>idigbio:mediarecords</td><td>idigbio:recordIds</td><td>idigbio:recordset</td><td>idigbio:uuid</td></tr> <tr><td>idigbio:version</td><td>message</td><td>tags</td><td>type</td></tr>
+					</table>
+				</div>
+			</div>
+		 
+			<div class="row">
+				<div class="col-12">
+					<h3 class="metadataFieldHeader">PBDB</h3>
+					<table class="parameterTable">
+		<tr><td>@timestamp</td><td>@version</td><td>abund_in_sediment</td><td>abund_unit</td></tr> <tr><td>abund_value</td><td>accepted_attr</td><td>accepted_name</td><td>accepted_no</td></tr> <tr><td>accepted_rank</td><td>architecture</td><td>articulated_parts</td><td>artifacts</td></tr> <tr><td>assembl_comps</td><td>associated_parts</td><td>bioerosion</td><td>cc1</td></tr> <tr><td>cc2</td><td>class</td><td>coll_refs-abund_in_sediment</td><td>coll_refs-articulated_parts</td></tr> <tr><td>coll_refs-artifacts</td><td>coll_refs-assembl_comps</td><td>coll_refs-associated_parts</td><td>coll_refs-bioerosion</td></tr> <tr><td>coll_refs-cc1</td><td>coll_refs-cc2</td><td>coll_refs-collection_aka</td><td>coll_refs-collection_comments</td></tr> <tr><td>coll_refs-collection_coverage</td><td>coll_refs-collection_dates</td><td>coll_refs-collection_methods</td><td>coll_refs-collection_name</td></tr> <tr><td>coll_refs-collection_no</td><td>coll_refs-collection_size</td><td>coll_refs-collection_subset</td><td>coll_refs-collection_type</td></tr> <tr><td>coll_refs-collectors</td><td>coll_refs-common_body_parts</td><td>coll_refs-component_comments</td><td>coll_refs-composition</td></tr> <tr><td>coll_refs-concentration</td><td>coll_refs-county</td><td>coll_refs-diet</td><td>coll_refs-difference</td></tr> <tr><td>coll_refs-early_interval</td><td>coll_refs-encrustation</td><td>coll_refs-environment</td><td>coll_refs-environment_basis</td></tr> <tr><td>coll_refs-family</td><td>coll_refs-feed_pred_traces</td><td>coll_refs-flags</td><td>coll_refs-formation</td></tr> <tr><td>coll_refs-formation1</td><td>coll_refs-formation2</td><td>coll_refs-fossilsfrom1</td><td>coll_refs-fossilsfrom2</td></tr> <tr><td>coll_refs-fragmentation</td><td>coll_refs-genus</td><td>coll_refs-geoPoint</td><td>coll_refs-geogcomments</td></tr> <tr><td>coll_refs-geogscale</td><td>coll_refs-geology_comments</td><td>coll_refs-geoplate</td><td>coll_refs-identified_name</td></tr> <tr><td>coll_refs-identified_no</td><td>coll_refs-identified_rank</td><td>coll_refs-lagerstatten</td><td>coll_refs-lat</td></tr> <tr><td>coll_refs-late_interval</td><td>coll_refs-latlng_basis</td><td>coll_refs-latlng_precision</td><td>coll_refs-life_habit</td></tr> <tr><td>coll_refs-lithadj1</td><td>coll_refs-lithadj2</td><td>coll_refs-lithdescript</td><td>coll_refs-lithification1</td></tr> <tr><td>coll_refs-lithification2</td><td>coll_refs-lithology1</td><td>coll_refs-lithology2</td><td>coll_refs-lng</td></tr> <tr><td>coll_refs-localbed</td><td>coll_refs-localorder</td><td>coll_refs-localsection</td><td>coll_refs-max_ma</td></tr> <tr><td>coll_refs-member</td><td>coll_refs-min_ma</td><td>coll_refs-minor_lithology1</td><td>coll_refs-minor_lithology2</td></tr> <tr><td>coll_refs-motility</td><td>coll_refs-museum</td><td>coll_refs-n_occs</td><td>coll_refs-orientation</td></tr> <tr><td>coll_refs-paleolat</td><td>coll_refs-paleolng</td><td>coll_refs-paleomodel</td><td>coll_refs-pres_mode</td></tr> <tr><td>coll_refs-preservation_comments</td><td>coll_refs-preservation_quality</td><td>coll_refs-protected</td><td>coll_refs-rare_body_parts</td></tr> <tr><td>coll_refs-record_type</td><td>coll_refs-ref_author</td><td>coll_refs-ref_pubyr</td><td>coll_refs-reference_no</td></tr> <tr><td>coll_refs-regionalbed</td><td>coll_refs-regionalorder</td><td>coll_refs-regionalsection</td><td>coll_refs-rock_censused</td></tr> <tr><td>coll_refs-sorting</td><td>coll_refs-spatial_resolution</td><td>coll_refs-state</td><td>coll_refs-stratcomments</td></tr> <tr><td>coll_refs-stratgroup</td><td>coll_refs-stratscale</td><td>coll_refs-taxonomy_comments</td><td>coll_refs-tectonic_setting</td></tr> <tr><td>coll_refs-temporal_resolution</td><td>coll_refs-zone</td><td>collection_aka</td><td>collection_comments</td></tr> <tr><td>collection_coverage</td><td>collection_dates</td><td>collection_methods</td><td>collection_name</td></tr> <tr><td>collection_no</td><td>collection_size</td><td>collection_subset</td><td>collection_type</td></tr> <tr><td>collectors</td><td>common_body_parts</td><td>component_comments</td><td>composition</td></tr> <tr><td>concentration</td><td>county</td><td>diet</td><td>difference</td></tr> <tr><td>early_interval</td><td>encrustation</td><td>environment</td><td>family</td></tr> <tr><td>fcoll_refs-ossilsfrom1</td><td>feed_pred_traces</td><td>flags</td><td>formation</td></tr> <tr><td>fossilsfrom1</td><td>fossilsfrom2</td><td>fragmentation</td><td>genus</td></tr> <tr><td>geoPoint</td><td>geogcomments</td><td>geogscale</td><td>geology_comments</td></tr> <tr><td>geoplate</td><td>host</td><td>identified_name</td><td>identified_no</td></tr> <tr><td>identified_rank</td><td>lagerstatten</td><td>lat</td><td>late_interval</td></tr> <tr><td>latlng_basis</td><td>latlng_precision</td><td>life_habit</td><td>lithadj1</td></tr> <tr><td>lithadj2</td><td>lithdescript</td><td>lithification1</td><td>lithification2</td></tr> <tr><td>lithology1</td><td>lithology2</td><td>lng</td><td>localbed</td></tr> <tr><td>localorder</td><td>localsection</td><td>max_ma</td><td>member</td></tr> <tr><td>message</td><td>min_ma</td><td>minor_lithology1</td><td>minor_lithology2</td></tr> <tr><td>motility</td><td>museum</td><td>occ_refs-author1init</td><td>occ_refs-author1last</td></tr> <tr><td>occ_refs-author2init</td><td>occ_refs-author2last</td><td>occ_refs-doi</td><td>occ_refs-editors</td></tr> <tr><td>occ_refs-firstpage</td><td>occ_refs-formatted</td><td>occ_refs-language</td><td>occ_refs-lastpage</td></tr> <tr><td>occ_refs-occurrence_no</td><td>occ_refs-ontogeny</td><td>occ_refs-order</td><td>occ_refs-orientation</td></tr> <tr><td>occ_refs-otherauthors</td><td>occ_refs-paleoGeoPoint</td><td>occ_refs-paleolat</td><td>occ_refs-paleolng</td></tr> <tr><td>occ_refs-paleomodel</td><td>occ_refs-phylum</td><td>occ_refs-plant_organ</td><td>occ_refs-plant_organ2</td></tr> <tr><td>occ_refs-pres_mode</td><td>occ_refs-preservation_comments</td><td>occ_refs-preservation_quality</td><td>occ_refs-protected</td></tr> <tr><td>occ_refs-publication_type</td><td>occ_refs-pubno</td><td>occ_refs-pubtitle</td><td>occ_refs-pubvol</td></tr> <tr><td>occ_refs-pubyr</td><td>occ_refs-rare_body_parts</td><td>occ_refs-record_type</td><td>occ_refs-ref_author</td></tr> <tr><td>occ_refs-ref_pubyr</td><td>occ_refs-ref_type</td><td>occ_refs-reference_no</td><td>occ_refs-reftitle</td></tr> <tr><td>occ_refs-regionalbed</td><td>occ_refs-regionalorder</td><td>occ_refs-regionalsection</td><td>occ_refs-reid_no</td></tr> <tr><td>occ_refs-reinforcement</td><td>occ_refs-reproduction</td><td>occ_refs-rock_censused</td><td>occ_refs-sorting</td></tr> <tr><td>occ_refs-spatial_resolution</td><td>occ_refs-state</td><td>occ_refs-stratcomments</td><td>occ_refs-stratgroup</td></tr> <tr><td>occ_refs-stratscale</td><td>occ_refs-taxon_environment</td><td>occ_refs-taxonomy_comments</td><td>occ_refs-tectonic_setting</td></tr> <tr><td>occ_refs-temporal_resolution</td><td>occ_refs-thickness</td><td>occ_refs-vision</td><td>occ_refs-zone</td></tr> <tr><td>occurrence_no</td><td>ontogeny</td><td>order</td><td>orientation</td></tr> <tr><td>paleoGeoPoint</td><td>paleolat</td><td>paleolng</td><td>paleomodel</td></tr> <tr><td>phylum</td><td>plant_organ</td><td>plant_organ2</td><td>pres_mode</td></tr> <tr><td>preservation_comments</td><td>preservation_quality</td><td>protected</td><td>rare_body_parts</td></tr> <tr><td>record_type</td><td>ref_author</td><td>ref_pubyr</td><td>reference_no</td></tr> <tr><td>regionalbed</td><td>regionalorder</td><td>regionalsection</td><td>reid_no</td></tr> <tr><td>reinforcement</td><td>reproduction</td><td>rock_censused</td><td>sorting</td></tr> <tr><td>spatial_resolution</td><td>state</td><td>stratcomments</td><td>stratgroup</td></tr> <tr><td>stratscale</td><td>taxon_environment</td><td>taxonomy_comments</td><td>tectonic_setting</td></tr> <tr><td>temporal_resolution</td><td>thickness</td><td>type</td><td>vision</td></tr>
+					</table>
+				</div>
+			</div>
+		 
 </section>
