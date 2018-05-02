@@ -12,51 +12,67 @@
 	<div class="row">
 		<div class="col-12">
 			<H2 id="overview">Overview</H2>
-			<p>The ePandda API, in providing connections between PBDB and iDigBio enables users to query on any field in either database. The query format also allows users to define how matches will be made between the databases based on three general criteria: locality, chronostratigraphy, and taxonomy.</p>
+			<p>The ePandda API unifies the <a href="https://paleobiodb.org/#/">Paleobiology Database (PBDB)</a> (collection-based occurrence and taxonomic data) and <a href="https://www.idigbio.org">iDigBio</a> (collection-based specimen data, including images) into a single source, enabling users to query on any field in either database and receive correlated specimen and occurrence data in response. Links between iDigBio specimens and PBDB occurrences are established through direct and inferred matching of locality, chronostratigraphy and taxonomy values present in both databases.
+			</p>
 
-			<p>These parameters allow users to broaden or narrow their search as necessary to enabled data discovery, identifying specific matches among a large number of results or widening terms to discover matches more loosely.</p>
+			<p>The query format provided by the ePandda API allows callers to control how  links between PBDB and iDigBio are established using various elements of locality, chronostratigraphy and taxonomy. Parameters allow users to broaden or narrow their search as necessary to enable data discovery, filtering of large result sets or broadening of terms to expand results.</p>
 
-			<p>The below examples use the main occurrence API endpoint, which provide the most general search interface for ePandda. Further endpoints will return more specialized results, including publications and annotations information. See the full [endpoint] documentation below for further information.</p>
+			<p>The ePandda API is organized into endpoints, each with a distinct set of options. The <em>occurrences </em> endpoint provides generalized query access to the unified PBDB/iDigBio specimen/occurrence data set and is the main entry point into the API. Additional endpoints provide query interfaces for publications and annotations information. See the full [endpoint] documentation below for further information. Most of the examples below use the <em>occurrences</em> endpoint, which provides the most general search interface for ePandda and is likely to be used for most API interaction.</p>
 
 			<h2>The Query</h2>
 
-			<p>A basic query against the occurrence endpoint will look like this</p> <pre>api.epandda.org/es_occurrences?terms=genus:hadrosaurus</pre>
-			<p>This query can be extended with further terms fields, geopoint queries and settings to how matches will be made. However the initial search is configured, the response object will be comprised of the following components.</p>
+			<p>A basic query against the <em>occurrences</em> endpoint to find all occurrences and specimens of genus Hadrosaurus would be formed as:</p> <pre>https://api.epandda.org/es_occurrences?terms=genus:hadrosaurus</pre>
+			<p>This query can be extended with additional term fields, geographic queries (point and area) and settings controlling how matching between PBDB occurrences and iDigBio specimens is performed. However the initial search is configured the response  will include the standard set of components described in the <a href="#results">results</a> section.</p>
 
-			<p>To add further parameters to your search provide more field:term search pairs split by pipes (“|”). So for example, limiting the above query to Canada would appear as</p> <pre>api.epandda.org/es_occurrences?terms=genus:hadrosaurus|country:canada</pre>
+			<p>Additional query terms may be added to your search by appending field:term search pairs separated by the pipe (“|”) character. (See [TERM LIST] for a list of available term fields.) For example, limiting our example  query to the genus hadrosaurus occurring in Canada could be expressed as:</p> <pre>https://api.epandda.org/es_occurrences?terms=genus:hadrosaurus|country:canada</pre>
 
 			<h3>Querying on Georeference Data</h3>
-			<p>ePandda allows for querying on georeference in three ways:</p>
+			<p>ePandda allows for querying on georeferences in three ways:</p>
 			<ul>
 				<li>distance from a provided latitude,longitude coordinate pair</li>
 				<li>presence within a bounding box defined by the upper left and bottom right corners</li>
 				<li>presence within a polygon defined by a list of coordinate pairs</li>
 			</ul>
 
-			<p>These search terms can be added to any query with the geoPointFields parameter, which takes up to three components split by a pipe (“|”). These are:</p>
+			<p>These search terms can be added to any query using the geoPointFields parameter, which takes up to three components separated by pipe (“|”) characters. These are:</p>
 			<ol>
 				<li><strong>The coordinate list (Required)</strong><br/>
-				Always provided as sets of comma-separated coordinate pairs, each split by a semicolon (e.g. 34.324,-78.23432;32.234,-80.54). Providing a single coordinate will enable search as a distance from that point. Two coordinates will be interpreted as a bounding box and more than two will be parsed as the corners of a polygon</li>
+				Always provided as sets of comma-separated coordinate pairs, each separated by a semicolon (e.g. 34.324,-78.23432;32.234,-80.54). Providing a single coordinate will enable search as a distance from that point. Two coordinates will be interpreted as a bounding box and more than two will be parsed as the corners of a polygon</li>
 				<li><strong>The geopoint radius (Optional)</strong><br/>
-				If searching on distance from a single coordinate, this option will define the distance in kilometers. This should be provided as a number ONLY (e.g. 10 NOT 10km)</li>
-				<li><strong>Paleo Georeferences (Optional)</strong><br/>
+				If searching on distance from a single coordinate, this option defines the distance in kilometers. This should be provided as a number ONLY (e.g. 10 NOT 10km)</li>
+				<li><strong>Paleo georeferences (Optional)</strong><br/>
 				PBDB includes a paleo georeference point in addition to a modern coordinate pair. To query on this field set the third option to “paleo”, this will disable the search on iDigBio and only query PBDB for records matching that paleo coordinate.</li>
 			</ol>
+			
+			<p>
+			    Searching for genus Ostrea within 5km of a point:
+			    <pre>https://api.epandda.org/es_occurrences?terms=genus:ostrea&geoPointFields=29.67,-83.388|5</pre>
+			</p>
+			<p>
+			    Searching for genus Ostrea within a bounding box:
+			    <pre>https://api.epandda.org/es_occurrences?terms=genus:ostrea&geoPointFields=30.1,-83.8;29.17,-83.0</pre>
+			</p>
+			<p>
+			    Searching for genus Ostrea within a polygon:
+			    <pre>https://api.epandda.org/es_occurrences?terms=genus:ostrea&geoPointFields=30.1,-83.8;31,-82.5;29.17,-83.0;28.5,-82.8</pre>
+			</p>
 
 			<h3>Return Media</h3>
-			<p>By default ePandda does not return references to media files. To get a list of any referenced media files in your response object set the returnMedia parameter to “true”</p>
+			<p>By default ePandda does not return references to media files. To get a list of any referenced media files in your response object set the returnMedia parameter to “true”. For example: </p>
+						       <pre>https://api.epandda.org/es_occurrences?terms=genus:hadrosaurus&returnMedia=true</pre>
 
 			<h3>Alter Matching Behavior</h3>
-			<p>By default ePandda will attempt to create matches by county, genus and period/system. However these matching parameters can be made more or less strict by setting the chronoMatchLevel, taxonMatchLevel or localityMatchLevel parameters. The allowed settings for these parameters are described below in the [Endpoint Documentation] but the allow for the setting of these levels. For example, taxonomy match level can be made to exactly match a scientific name, if that is part of a query, or be broadened out to order or family if a very specific locality search is being conducted.<p>
+			<p>By default ePandda will attempt to establish matches in the underlying dats sets by county, genus and period/system. Matching criteria can be made more or less strict by setting the chronoMatchLevel, taxonMatchLevel or localityMatchLevel parameters. For example, taxonomy match level can be made to exactly match a scientific name, if that is part of a query, or be broadened out to order or family if a very specific locality search is being conducted. Allowed settings for these parameters are described below in the [Endpoint Documentation].<p>
 
 			<h3>Excluding Match terms</h3>
-			<p>By default it is necessary for results to match on all three matching facets for results to be returned, however this can be changed by setting the matchOn parameter to exclude one of those facets. WARNING: excluding a facet can result in extremely large result sets.</p>
+			<p>By default ePandda requires matches to exist on all three criteria – locality, chronostratigrqphy and taxonomy – for results to be returned. This requirement can be relaxed by setting the matchOn parameter to exclude selected criteria. Note that excluding criteria may result in extremely large and/or nonsensical result sets.</p>
 
+            <a name="results"/>
 			<h2>The Results</h2>
-			<p>The response object is primarily comprised of the queryInfo block, which provides some basic information about the query, and the results block, which includes all of the matching records found/</p>
+			<p>The response object is primarily comprised of the queryInfo block, which provides some basic information about the query, and the results block which includes all matching records.</p>
 
 			<h4>queryInfo</h4>
-			<p>This contains the total number of matches returned from both iDigBio and PBDB as well as information on the fields queried in both databases to generate the match results.</p>
+			<p>This block contains the total number of matches returned from both iDigBio and PBDB as well as information on the fields queried in both databases to generate matching results.</p>
 			<pre>
 "queryInfo": {
 	"idigbioTotal": 136,
@@ -81,14 +97,14 @@
 			</pre>
 
 			<h4>Results</h4>
-			<p>The main body of the response, the results section contains match objects for each result found to match the search criteria (in this example simply for the genus hadrosaurus). The data in the match fields (here Cretaceous, Bladen County and hadrosaurus) is then used to find matches in the corresponding database, which are returned as matches. This object is comprised of the following fields:</p>
+			<p>The main body of the response, the results section contains match objects for each result found matching the search criteria (in this example simply for the genus hadrosaurus). The data in the match fields (here Cretaceous, Bladen County and hadrosaurus) is then used to find matches in the corresponding database, which are returned as matches. This object is comprised of the following fields:</p>
 
 			<ul>
-				<li><strong>fields</strong> This provides the data drawn from the source records used to make the matches</li>
-				<li><strong>fullMatchQuery/fullSourceQuery</strong> These provide JSON strings of the queries used to create the matches. They can be used to return full sets of records matching those searches, see the [Returning further results] section below</li>
-				<li><strong>matches/sources</strong> Lists of the matching records from iDigBio and PBDB</li>
-				<li><strong>matchType/sourceType</strong> Identifiers for which database the sources/matches were drawn from</li>
-				<li><strong>totalMatches</strong> The total number of matches found from searching the data in fields</li>
+				<li><strong>fields</strong> Provides data drawn from source records in PBDB or iDigBio used to make the matches</li>
+				<li><strong>fullMatchQuery/fullSourceQuery</strong> Provide JSON strings of the queries used to generate the matches. They can be used to return full sets of records matching those searches, see the [Returning further results] section below</li>
+				<li><strong>matches/sources</strong> Lists of the matching records from PBDB and iDigBio</li>
+				<li><strong>matchType/sourceType</strong> Identifiers indicating which database the sources/matches were drawn from</li>
+				<li><strong>totalMatches</strong> The total number of matches found</li>
 			</ul>
 
 			<pre>
@@ -247,16 +263,39 @@
 	"totalMatches": 7
 }
 			</pre>
+			
+			<h4>Other values</h4>
+			<p>The results response may include two additional values, <em>idigbio_search_after</em> and <em>pbdb_search_after</em>. These values are used for paging of large result sets and are described in detail below.</p>
 
 			<h3>Returning Further Results</h3>
-			<p>By default the API will not return all results if a query returns many matches. There are two different ways to return more results: by returning all matching/source records or by loading the next set/page of search results.</p>
+			<p>By default the API will return only the first 100 results when a query returns many matches. Additional results can be obtained using paging or by forcing the full result set to be returned:</p>
+			
+			<h4>Return the next page of results</h4>
+<p>
+    Contained within each <em>occurrences</em> endpoint response are the keys <em>idigbio_search_after</em> and <em>idigbio_search_after</em>. Note that if your result set contains only matches from PBDB or iDigBio one of these keys will be omitted.
+</p>
+<pre>
+{
+    "idigbio_search_after": "[8.481807, 212235]", 
+    "pbdb_search_after": "[6.7852087, 155715]", 
+    "queryInfo": {
+        "idigbioTotal": 21520, 
+        ...
+        "pbdbTotal": 2521
+    }, 
+    "results": {
+        ...
+    }
+}
+</pre>
+			<p>Additional pages of results may be returned by appending the <em>idigbioSearchFrom</em> and/or <em>pbdbSearchFrom</em> parameters to your request. Set these parameters to the corresponding values in <em>idigbio_search_after</em> and/or <em>pbdb_search_after</em> and the endpoint will return the next page of results. This process may be repeated to obtain all pages of a result set.</p> 
+						
+	<pre>https://api.epandda.org/es_occurrences?terms=genus:hadrosaurus&idigbioSearchAfter="[13.647958, 5933488]"</pre>
+		
+			<h4>Return all matches/sources</h4>
+			<p>The <em>full_match_results</em> API endpoint can be used to return all records in both PBDB and iDigBio that match your query criteria. The endpoint takes a serialized <a href=="https://elasticsearch-dsl.readthedocs.io/en/latest/">ElasticSearch query DSL</a> JSON object. You can obtain the JSON query DSL objects for your API query in the API response. There will be two, for the match query (in the <em>fullMatchQuery</em>) and the source query (in <em>fullSourceQuery</em>). Pass either to the endpoint as follows:</p>	
+			<pre>https://api.epandda.org/full_match_results?matchQuery=“{\"query\": {\"bool\": {\"should\": [{\"terms\": {\"dwc:earliestPeriodOrLowestSystem\": [\"cretaceous\"]}}, {\"terms\": {\"dwc:latestPeriodOrHighestSystem\": [\"cretaceous\"]}}], \"must\": [{\"match\": {\"dwc:county\": \"Bladen\"}}, {\"match\": {\"dwc:genus\": \"Hadrosaurus\"}}]}}, \"size\": 7}”</pre>
 
-			<h4>Return All Matches/Sources</h4>
-			<p>This query will return all records matching a set of criteria from either PBDB or iDigBio, and is handled through the full_match_results endpoint. To utilize this take the JSON string provided in fullMatchQuery or fullSourceQuery from a result set and pass it to the endpoint as follows</p>
-			<pre>api.epandda.org/full_match_results?matchQuery=“{\"query\": {\"bool\": {\"should\": [{\"terms\": {\"dwc:earliestPeriodOrLowestSystem\": [\"cretaceous\"]}}, {\"terms\": {\"dwc:latestPeriodOrHighestSystem\": [\"cretaceous\"]}}], \"must\": [{\"match\": {\"dwc:county\": \"Bladen\"}}, {\"match\": {\"dwc:genus\": \"Hadrosaurus\"}}]}}, \"size\": 7}”</pre>
-
-			<h4>Return the Next page of results</h4>
-			<p>To return the next page of search results, take your existing query to the occurrence endpoint and append an additional parameter (or parameters) idigbioSearchFrom or pbdbSearchFrom. The response object will have either one or both of the parameters idigbioSearchFrom or pbdbSearchFrom. Copy those values (a JSON string) to the new parameter and the endpoint will return the subsequent page of results</p> <pre>api.epandda.org/es_occurrences?terms=genus:hadrosaurus&idigbioSearchAfter="[13.647958, 5933488]"</pre>
 		</div>
 	</div>
 </section>
