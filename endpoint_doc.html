@@ -156,6 +156,30 @@
 			</tr>
 					 
 			<tr>
+				<td>title</td>
+				<td>Article Title</td>
+				<td>text</td>
+				<td>False</td>
+				<td>The full or partial title of a journal article, drawn from the ref_title field in PBDB</td>
+			</tr>
+					 
+			<tr>
+				<td>journal</td>
+				<td>Journal</td>
+				<td>text</td>
+				<td>False</td>
+				<td>The full or partial title of the journal, drawn from the pub_title field in PBDB</td>
+			</tr>
+					 
+			<tr>
+				<td>authors</td>
+				<td>Author Names</td>
+				<td>text</td>
+				<td>False</td>
+				<td>The last names, or last names + first initials of article authors. Drawn from the ref_author, ref_otherauthors, ref_author1last, ref_author2last, ref_author1init, ref_author2init and ref_formatted fields from PBDB</td>
+			</tr>
+					 
+			<tr>
 				<td>matchOn</td>
 				<td>Match on</td>
 				<td>text</td>
@@ -201,6 +225,14 @@
 				<td>text</td>
 				<td>False</td>
 				<td>This implements paging in a more effecient way in ElasticSearch. It should be provided the last return search result in order to request a subsequent page of search results</td>
+			</tr>
+					 
+			<tr>
+				<td>skipCache</td>
+				<td>Skip Cache</td>
+				<td>boolean</td>
+				<td>False</td>
+				<td>By default ePandda caches results for 12 hours. To force the API to bypass this cache pass this parameter to retrieve a new dataset</td>
 			</tr>
 					 
 		</table>
@@ -345,6 +377,14 @@
 				<td>Toggle to return any matching media from iDigBio</td>
 			</tr>
 					 
+			<tr>
+				<td>skipCache</td>
+				<td>Skip Cache</td>
+				<td>boolean</td>
+				<td>False</td>
+				<td>By default ePandda caches results for 12 hours. To force the API to bypass this cache pass this parameter to retrieve a new dataset</td>
+			</tr>
+					 
 		</table>
 	</div>
 </div>
@@ -408,46 +448,6 @@
 			</tr>
 			 
 			<tr>
-				<td>stateProvinces</td>
-				<td>States/Provinces</td>
-				<td>boolean</td>
-				<td>False</td>
-				<td>The number of unique states represented in the collections</td>
-			</tr>
-					 
-			<tr>
-				<td>countries</td>
-				<td>Countries</td>
-				<td>boolean</td>
-				<td>False</td>
-				<td>The number of unique countries represented in the collections</td>
-			</tr>
-					 
-			<tr>
-				<td>counties</td>
-				<td>Counties</td>
-				<td>boolean</td>
-				<td>False</td>
-				<td>The number of unique counties represented in the collections</td>
-			</tr>
-					 
-			<tr>
-				<td>localities</td>
-				<td>Localities</td>
-				<td>boolean</td>
-				<td>False</td>
-				<td>The number of unique localities represented in the collections</td>
-			</tr>
-					 
-			<tr>
-				<td>geoPoints</td>
-				<td>Geographic Coordinates</td>
-				<td>boolean</td>
-				<td>False</td>
-				<td>The number of unique geographic coordinates represented in the collections</td>
-			</tr>
-					 
-			<tr>
 				<td>totalRecords</td>
 				<td>Total Records</td>
 				<td>boolean</td>
@@ -464,11 +464,11 @@
 			</tr>
 					 
 			<tr>
-				<td>taxonomies</td>
-				<td>Taxonomies</td>
+				<td>recordFields</td>
+				<td>Metadata Fields</td>
 				<td>boolean</td>
 				<td>False</td>
-				<td>The number of unique taxonomic hierarchies represented in the collections</td>
+				<td>Returns a list of the queryable fields from iDigBio and PBDB</td>
 			</tr>
 					 
 		</table>
