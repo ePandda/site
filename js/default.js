@@ -170,17 +170,18 @@ $(document).ready(function(){
 	}
 
     function plotSpecimen(map, infoWindow, pos, geoRadius){
-		var geoRadiusMeters = geoRadius * 1000;
-		$.getJSON( api_url + '/occurrences?terms=geoPoint:' + pos.lat + ', ' + pos.lng + '&geoRadius=' + geoRadiusMeters +'&limit=500', function( data ) {
+		infoWindow.setPosition(pos);
+		
+		$.getJSON( api_url + '/occurrences?geoPointFields=' + pos.lat + ',' + pos.lng + '|' + geoRadius +'&limit=500', function( data ) {
 			var specimen_results = data;
 			// add all the specimen points to the map
+			console.log(specimen_results.queryInfo);
 			for(var resKey in specimen_results.results){
 				if(specimen_results.results[resKey]['matches'] !== null){
 					placeSpecimenMarkers(specimen_results.results[resKey]['matches'], 	specimen_results.results[resKey]['matchType'], infoWindow);
 				}
 				placeSpecimenMarkers(specimen_results.results[resKey]['sources'], specimen_results.results[resKey]['sourceType'], infoWindow);
 			}
-			infoWindow.setPosition(pos);
 			infoWindow.setContent(specimen_results.queryInfo.idigbioTotal + ' iDigBio specimens and ' + specimen_results.queryInfo.pbdbTotal + ' PBDB specimens found in this area');
 			infoWindow.open(map);
 			markers.push(infoWindow);
@@ -193,6 +194,7 @@ $(document).ready(function(){
       var markerData = {};
 	  for (var i = 0; i < specimenResults.length; i++) {
 			var specimen = specimenResults[i];
+			console.log(specimen);
 			var scientificName = "";
 			var spec_type = "";
 			if(specimenType == 'idigbio'){
