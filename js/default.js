@@ -93,7 +93,6 @@ $(document).ready(function(){
           var bounds = new google.maps.LatLngBounds();
           places.forEach(function(place) {
             if (!place.geometry) {
-              console.log("Returned place contains no geometry");
               return;
             }
             //plotSpecimen(map, infoWindow, place.geometry.location);
@@ -101,6 +100,9 @@ $(document).ready(function(){
 			  lat: place.geometry.location.lat(),
 			  lng: place.geometry.location.lng()
 			};
+			infoWindow.setPosition(pos);
+			map.setCenter(pos);
+			infoWindow.setContent('Loading iDigBio and PBDB records for surrounding area...');
             plotSpecimen(map, infoWindow, pos, geoRadius);
 
             if (place.geometry.viewport) {
@@ -121,6 +123,8 @@ $(document).ready(function(){
 			  lng: position.coords.longitude
 			};
 			infoWindow.setPosition(pos);
+			map.setCenter(pos);
+			infoWindow.setContent('Loading iDigBio and PBDB records for surrounding area...');
 			plotSpecimen(map, infoWindow, pos, geoRadius);
 		  }, function() {
 			handleLocationError(true, infoWindow, map.getCenter());
@@ -136,6 +140,8 @@ $(document).ready(function(){
 					  lat: map.getCenter().lat(),
 					  lng: map.getCenter().lng()
 					};
+				infoWindow.setPosition(newpos);
+				infoWindow.setContent('Loading iDigBio and PBDB records for surrounding area...');
 				plotSpecimen(map, infoWindow, newpos, geoRadius);
 			});
 		});
@@ -153,6 +159,10 @@ $(document).ready(function(){
 					lat: map.getCenter().lat(),
 					lng: map.getCenter().lng()
 				};
+				console.log("Changing Radius", pos);
+				infoWindow.setPosition(pos);
+				infoWindow.setContent('Loading iDigBio and PBDB records for changed radius...');
+				infoWindow.open(map);
 				plotSpecimen(map, infoWindow, pos, newGeoRadius);
 				geoRadius = newGeoRadius;
 			} else {
@@ -170,18 +180,16 @@ $(document).ready(function(){
 	}
 
     function plotSpecimen(map, infoWindow, pos, geoRadius){
-		infoWindow.setPosition(pos);
-		
 		$.getJSON( api_url + '/occurrences?geoPointFields=' + pos.lat + ',' + pos.lng + '|' + geoRadius +'&limit=500', function( data ) {
 			var specimen_results = data;
 			// add all the specimen points to the map
-			console.log(specimen_results.queryInfo);
 			for(var resKey in specimen_results.results){
 				if(specimen_results.results[resKey]['matches'] !== null){
 					placeSpecimenMarkers(specimen_results.results[resKey]['matches'], 	specimen_results.results[resKey]['matchType'], infoWindow);
 				}
 				placeSpecimenMarkers(specimen_results.results[resKey]['sources'], specimen_results.results[resKey]['sourceType'], infoWindow);
 			}
+			infoWindow.setPosition(pos);
 			infoWindow.setContent(specimen_results.queryInfo.idigbioTotal + ' iDigBio specimens and ' + specimen_results.queryInfo.pbdbTotal + ' PBDB specimens found in this area');
 			infoWindow.open(map);
 			markers.push(infoWindow);
@@ -194,7 +202,6 @@ $(document).ready(function(){
       var markerData = {};
 	  for (var i = 0; i < specimenResults.length; i++) {
 			var specimen = specimenResults[i];
-			console.log(specimen);
 			var scientificName = "";
 			var spec_type = "";
 			if(specimenType == 'idigbio'){
@@ -374,6 +381,9 @@ function getTaxaImages(taxon, taxonRank, limit, page){
 	var pageString = '';
 	var mediaURIs = [];
 	$('#idbImages').html("<h1> <i class='fa fa-cog fa-spin fa-fw'></i><i class='fa fa-cog fa-spin fa-fw'></i><i class='fa fa-cog fa-spin fa-fw'></i> Loading...</h1>");
+	$('#idbPagingPrev').html('');
+	$('#idbPagingText').html('');
+	$('#idbPagingNext').html('');
 	$.ajax({
 		url: taxonURL,
 		method: "GET",
@@ -443,7 +453,11 @@ function getTaxaImages(taxon, taxonRank, limit, page){
 			}
 			$('#idbPagingText').html('<h5>Page 1/' + pages + '</h5>');
 			if($('#idbPagingNext').html() == ''){
-				$('#idbPagingNext').html('<button class="button pagingButton" onclick="scrollImages('+imageWidth+', '+pages+'); return false;">Next</button>');
+				if(pages > 1){
+					$('#idbPagingNext').html('<button class="button pagingButton" onclick="scrollImages('+imageWidth+', '+pages+'); return false;">Next</button>');
+				} else {
+					$('#idbPagingNext').html('<button class="button pagingButton disabled">Next</button>');
+				}
 			}
 		}
 	});

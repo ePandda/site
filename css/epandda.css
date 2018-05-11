@@ -427,7 +427,7 @@ table tbody th{
 }
 
 #imageWrapper{
-	overflow-x: auto;
+	overflow-x: hidden;
 }
 
 #imageCarousel{
