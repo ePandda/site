@@ -315,7 +315,7 @@ function returnUIResults(data){
 							listHTML += '<i class="fa fa-globe"></i> ';
 						}
 						listHTML += mtc['accepted_name'] + "</div>";
-						var record_id = src['occurrence_no'];
+						var record_id = mtc['occurrence_no'];
 						if(mtc['reference_no']){
 							record_id = mtc['reference_no']
 						}
