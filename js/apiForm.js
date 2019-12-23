@@ -46,31 +46,66 @@ function renderForm(endpoint, container){
 		dataType: "json",
 		crossDomain: "true",
 		success: function(data){
-			for (var i = 0; i < data.params.length; i++) {
-				var elementInfo = data.params[i];
-				if(elementInfo.display == false){ continue; }
-				var formElement = "<div class='row form-group'><div class='col-12'><label><h4>" + elementInfo.label + "</h4></label>";
-				formElement += "<small>" + elementInfo.description + "</small></div>"
-				switch(elementInfo.type) {
-					case "text":
-						formElement += "<div class='col-12'><input type='text' name='" + elementInfo.name + "' class='field'></div>";
-						break;
-					case "boolean":
-						formElement += "<div class='col-12'><input type='checkbox' name='" + elementInfo.name + "' class='epanddaCheckbox' value='true'></div>";
-						break;
-					case "integer":
-						formElement += "<div class='col-12'><input type='number' name='" + elementInfo.name + "' class='field' value='true'></div>";
-						break;
-					default:
-						break;
+			var groups = ['search', 'match', 'settings'];
+			var groupInfo = {
+				'search': {
+					'title': 'Search parameters'
+				},
+				'match': {
+					'title': 'Data matching options'
+				},
+				'settings': {
+					'title': 'Additional settings'
 				}
-				formElement += "</div></div>";
-				$(container + ' #apiFormElements').append(formElement);
-
+			};
+			for(var gi in groups) {
+				var g = groups[gi];
+				
+				var groupContent = '';
+				for (var i = 0; i < data.params.length; i++) {
+					var elementInfo = data.params[i];
+					
+					if(elementInfo.formGroup !== g) { continue; }
+					if(elementInfo.display == false){ continue; }
+					
+					var formElement = "<div class='row form-group'><div class='col-12'><label><h4>" + elementInfo.label + "</h4></label>";
+					formElement += "<small>" + elementInfo.description + "</small></div>"
+					switch(elementInfo.type) {
+						case "text":
+							if(elementInfo['validOptions'] && Array.isArray(elementInfo['validOptions'])) {
+								formElement += "<div class='col-4 offset-8'><select name='" + elementInfo.name + "' class='field'>";
+								
+								if (!elementInfo.mustBeSet) {
+									formElement += "<option value=''>-</option>";
+								}	
+								for(var x in elementInfo['validOptions']) {
+									var o = elementInfo['validOptions'][x];
+									formElement += "<option value='" + o + "'>" + o + "</option>";	
+								}
+								
+								formElement += "</select></div>";
+							} else {
+								formElement += "<div class='col-12'><input type='text' name='" + elementInfo.name + "' class='field'></div>";
+							}
+							break;
+						case "boolean":
+							formElement += "<div class='col-12'><input type='checkbox' name='" + elementInfo.name + "' class='epanddaCheckbox' value='true'></div>";
+							break;
+						case "integer":
+							formElement += "<div class='col-12'><input type='number' name='" + elementInfo.name + "' class='field' value='true'></div>";
+							break;
+						default:
+							break;
+					}
+					formElement += "</div>";
+					
+					groupContent += formElement;
+				}
+				
+				$(container + ' #apiFormElements').append("<div class='row form-group'><div class='col-12'><label><h2>" + groupInfo[g].title + "</h2></label>" + groupContent + "</div></div>");
 			}
 			$('#apiButton').html('<button id="searchButton" class="button" onClick="processForm($(\'#apiForm\').serializeArray(), \'#apiResultsContainer\', 25, 1, null, null, false); toggleForm(\'' + endpoint + '\', \'#apiForm\'); return false;">Search</button>')
 			$(container + ' #apiFormElements').append("<input type='hidden' name='endpoint' value='" + endpoint + "'>");
-			//toggleForm('#apiForm', endpoint)
 		}
 	});
 }
@@ -138,6 +173,9 @@ function processForm(formData, resultContainer, limit, page, idigbioSearchAfter,
 			$('#apiAdditionalLoading').html("<h1> <i class='fa fa-cog fa-spin fa-2x fa-fw'></i> Loading...</h1>");
 		}
 
+
+		window.history.pushState({'endpoint': endpoint}, "Search results", "#sandbox");
+		
 		$.ajax({
 
 			url: api_url + '/' + endpoint + "?" + apiParams,
@@ -148,6 +186,8 @@ function processForm(formData, resultContainer, limit, page, idigbioSearchAfter,
 				$(resultContainer + ' #apiResultsLabel').html('Search Results');
 				var totalResults = data.queryInfo.idigbioTotal + data.queryInfo.pbdbTotal
 				$(resultContainer + ' #apiResultsCounts').html("Total Results: " + totalResults + "<br/>iDigBio Results: " + data.queryInfo.idigbioTotal + "<br/>PaleoBiology Database Results: " + data.queryInfo.pbdbTotal);
+				$(resultContainer + ' #apiDownloadData').html(data.downloadData ? "Download data as ZIP: <a href='" + data.downloadData + "'>" + data.downloadData + "</a>" : "");
+				
 				$(resultContainer + ' #apiResultsURL').html("<b>URL:</b><br/><pre>https://api.epandda.org/" + endpoint + "?" + decodeURIComponent(apiParams) + "</pre>");
 				$(resultContainer + ' #apiResultsJSONLabel').html('Full JSON Results');
 				$(resultContainer + ' #apiResultsButtons').html('<div class="col-3 no-padding firstResultButton"><button class="resultDisplay" onClick="$(\'#apiUIResultsContainer\').show(); $(\'#apiResultsJSON\').hide();"><h4>List</h4></button></div><div class="col-3 no-padding"><button class="resultDisplay" onClick="$(\'#apiUIResultsContainer\').hide(); $(\'#apiResultsJSON\').show();"><h4>JSON</h4></button></div>');
@@ -530,3 +570,9 @@ function returnMoreResults(data, recordType){
 	listHTML += '</div>';
 	return listHTML;
 }
+
+window.onpopstate = function(event) {
+	if (document.location && document.location.href && document.location.href.match(/#sandbox$/) && event && event.state && (event.state['endpoint'])) {
+		jQuery("#searchCollapse_" + event.state['endpoint']).click();
+	}
+};

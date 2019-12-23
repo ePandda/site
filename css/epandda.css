@@ -152,7 +152,7 @@ table tbody th{
 	padding:15px;
 }
 #apiFormContainer #apiFormElements{
-	max-height:435px;
+	max-height:1200px;
 	overflow-y:scroll;
 	margin-bottom:25px;
 }
