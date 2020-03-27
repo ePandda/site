@@ -110,11 +110,11 @@ function renderForm(endpoint, container){
 	});
 }
 
-function toggleForm(endpoint, formID){
-	if($(formID).data("endpoint") && $(formID).data("endpoint") != endpoint){
+function toggleForm(endpoint, formID, forceOpen=false){
+	if(($(formID).data("endpoint") && $(formID).data("endpoint") != endpoint) || forceOpen){
 		$('#searchCollapse_' + endpoint).html('[ &mdash; ]');
 		$('#endpointRow_' + endpoint).addClass('activeSearch');
-		renderForm(endpoint, '#apiFormContainer');
+		if(!forceOpen) renderForm(endpoint, '#apiFormContainer');
 		if($(formID).is(":visible") == false){
 			$(formID).toggle();
 		}
@@ -188,7 +188,7 @@ function processForm(formData, resultContainer, limit, page, idigbioSearchAfter,
 				$(resultContainer + ' #apiResultsCounts').html("Total Results: " + totalResults + "<br/>iDigBio Results: " + data.queryInfo.idigbioTotal + "<br/>PaleoBiology Database Results: " + data.queryInfo.pbdbTotal);
 				$(resultContainer + ' #apiDownloadData').html(data.downloadData ? "Download data as ZIP: <a href='" + data.downloadData + "'>" + data.downloadData + "</a>" : "");
 				
-				$(resultContainer + ' #apiResultsURL').html("<b>URL:</b><br/><pre>https://api.epandda.org/" + endpoint + "?" + decodeURIComponent(apiParams) + "</pre>");
+				$(resultContainer + ' #apiResultsURL').html("<b>URL:</b><br/><pre>https://api.epandda.org/" + endpoint + "?" + (apiParams) + "</pre>");
 				$(resultContainer + ' #apiResultsJSONLabel').html('Full JSON Results');
 				$(resultContainer + ' #apiResultsButtons').html('<div class="col-3 no-padding firstResultButton"><button class="resultDisplay" onClick="$(\'#apiUIResultsContainer\').show(); $(\'#apiResultsJSON\').hide();"><h4>List</h4></button></div><div class="col-3 no-padding"><button class="resultDisplay" onClick="$(\'#apiUIResultsContainer\').hide(); $(\'#apiResultsJSON\').show();"><h4>JSON</h4></button></div>');
 				$(resultContainer + ' #apiResultsJSON').html("<pre style='margin-top:0'>" + JSON.stringify(data.results, null, 2) + "</pre>");
@@ -331,8 +331,8 @@ function returnUIResults(data){
 				}
 				listHTML += '</div>';
 
-			});
-			listHTML += '</div><div class="row"><div class="col-12"><button class="searchMore" onClick=\'expandSearch("sourceQuery", ' + JSON.stringify(match.fullSourceQuery) + ', "#apiMoreContainer", "' + match.matchType + '"); return false;\'>See All Source Records</button></div></div>';
+			}); 
+			listHTML += '</div><div class="row"><div class="col-12"><button class="searchMore" onClick=\'expandSearch("sourceQuery", ' + JSON.stringify(match.fullSourceQuery) + ', "#apiMoreContainer", "' + match.sourceType + '"); return false;\'>See All Source Records</button></div></div>';
 		}
 		listHTML += '</div><div class="col-6"><h5>'+ match.matchType + ' Matches</h5><div id="'+key+'Matches">';
 		if(match.matches != null){
