@@ -373,7 +373,7 @@ function setHomePageStats() {
 
 function getTaxaImages(taxon, taxonRank, limit, page){
 
-	var taxonURL = api_url + '/occurrences?terms=' + taxonRank + ':' + taxon + '&returnMedia=true&limit=500&taxonMatchLevel=' + taxonRank;
+	var taxonURL = api_url + '/occurrences?terms=' + taxonRank + ':' + taxon + '&returnMedia=true&limit=5000&taxonMatchLevel=scientificname';
 	var counter = 0;
 	var rowCounter = 0;
 	var offset = page * 12;
@@ -427,6 +427,7 @@ function getTaxaImages(taxon, taxonRank, limit, page){
 						var replaceDiv = $('[src="'+ uri[1] + '"]').parent();
 						replaceDiv.html('<div class="imagePlaceholder"><i class="fa fa-image fa-5x"></i><br/>Unable to load image:<br/><a href="' + uri[1] + '">' + uri[1] + '</a></div><a href="' + uri[0] + '" target="_blank" ">iDigBio Record</a>');
 				});
+				uri[1] = uri[1].replace("http://", "https://");
 				tempString += '<div class="col-4 imageResult"><img src="' + uri[1] + '"/><a href="' + uri[0] + '" target="_blank" ">iDigBio Record</a></div>';
 				rowCounter++;
 				if(rowCounter % 3 == 0){
